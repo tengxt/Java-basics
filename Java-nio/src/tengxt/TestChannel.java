@@ -3,9 +3,9 @@ package tengxt;
 import org.junit.Test;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 
 /**
  * 一、通道（channel）：用于源节点与目标节点的连接。在 Java NIO 中负责缓冲区中数据的传输。Channel 本身不存储数据，因此需要配合缓冲区进行传输。
@@ -133,7 +132,7 @@ public class TestChannel {
             FileChannel outChannel = FileChannel.open(Paths.get("E:/2.jpg"),
                     StandardOpenOption.WRITE, StandardOpenOption.READ, StandardOpenOption.CREATE);
 
-            inChannel.transferTo(0, inChannel.size(), outChannel);
+            // inChannel.transferTo(0, inChannel.size(), outChannel);
             outChannel.transferFrom(inChannel, 0, inChannel.size());
 
             //  关闭连接
@@ -159,7 +158,7 @@ public class TestChannel {
     // 字符集
     @Test
     public void test5() {
-        Charset gbk = Charset.forName("UTF-8");
+        Charset gbk = Charset.forName("GBK");
         // 获取编码器
         CharsetEncoder encd = gbk.newEncoder();
         // 获取解码器
@@ -176,7 +175,9 @@ public class TestChannel {
         } catch (CharacterCodingException e) {
             e.printStackTrace();
         }
-        System.out.println(bbuf.get());
+        for (int i = 0; i < 12; i++) {
+            System.out.println(bbuf.get());
+        }
 
         // 解码
         bbuf.flip();
@@ -187,5 +188,54 @@ public class TestChannel {
             e.printStackTrace();
         }
         System.out.println(cbuf.toString());
+
+        System.out.println("----------");
+        //
+        Charset charset = Charset.forName("GBK");
+        bbuf.flip();
+        try {
+            CharBuffer decode1 = charset.decode(bbuf);
+            System.out.println(decode1.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    // 分散和聚集
+    @Test
+    public void test6(){
+        try {
+            RandomAccessFile raf = new RandomAccessFile("F:/jsp.txt","rw");
+            // 1. 获取通道
+            FileChannel channel = raf.getChannel();
+            // 2. 分配指定大小的缓冲区
+            ByteBuffer buffer1 = ByteBuffer.allocate(100);
+            ByteBuffer buffer2 = ByteBuffer.allocate(1024);
+
+            // 3. 分散读取
+            ByteBuffer[] buffers = {buffer1,buffer2};
+            channel.read(buffers);
+            for (ByteBuffer buffer : buffers) {
+                buffer.flip();
+            }
+            System.out.println(new String(buffers[0].array(), 0, buffers[0].limit()));
+            System.out.println("------------");
+            System.out.println(new String(buffers[1].array(), 0, buffers[1].limit()));
+
+            // 4. 聚集写入
+            RandomAccessFile raf2 = new RandomAccessFile("F:/jsp2.txt","rw");
+            FileChannel channel2 = raf2.getChannel();
+            channel2.write(buffers);
+
+            // 关闭连接
+            channel2.close();
+            raf2.close();
+            channel.close();
+            raf.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
