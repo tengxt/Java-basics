@@ -23,14 +23,14 @@ public class TestNonBlockingNIO {
             // 2. 切换非阻塞模式
             ssChannel.configureBlocking(false);
             // 3. 绑定连接
-            ssChannel.bind(new InetSocketAddress(8888));
+            ssChannel.bind(new InetSocketAddress(9898));
             // 4. 获取选择器
             Selector selector = Selector.open();
-            // 5. 将通道注册到选择器上，并且指定“监听接收时间”
+            // 5. 将通道注册到选择器上，并且指定“监听接收事件”
             ssChannel.register(selector, SelectionKey.OP_ACCEPT);
             // 6. 轮询式的获取选择器上已经“准备就绪”的事件
             while (selector.select() > 0) {
-                // 7. 获取当前选择器中所有注册的“选择器（已就绪的监听事件）”
+                // 7. 获取当前选择器中所有注册的“选择键（已就绪的监听事件）”
                 Iterator<SelectionKey> it = selector.selectedKeys().iterator();
                 while (it.hasNext()) {
                     // 8. 获取准备“就绪”的事件
@@ -51,7 +51,6 @@ public class TestNonBlockingNIO {
                         int len = 0;
                         while ((len = sChannel.read(buffer)) > 0) {
                             buffer.flip();
-                            // 存在不会打印客户端传递过来的数据 ???
                             System.out.println(new String(buffer.array(), 0, len));
                             buffer.clear();
                         }
@@ -75,13 +74,13 @@ public class TestNonBlockingNIO {
     public void client() {
         try {
             // 1. 获取通道
-            SocketChannel sChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 8888));
+            SocketChannel sChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 9898));
             // 2. 切换非阻塞模式
             sChannel.configureBlocking(false);
             // 3. 分配指定大小的缓冲区
             ByteBuffer buffer = ByteBuffer.allocate(1024);
             // 4. 发送数据到服务端
-            String str = "啊哈哈哈哈哈哈哈";
+            String str = "啊哈哈";
             buffer.put((new Date().toString() + "\t" + str).getBytes());
             buffer.flip();
             sChannel.read(buffer);

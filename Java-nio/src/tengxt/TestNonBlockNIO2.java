@@ -10,8 +10,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Scanner;
-
 public class TestNonBlockNIO2 {
 
     @Test
@@ -27,7 +25,7 @@ public class TestNonBlockNIO2 {
                 while (it.hasNext()) {
                     SelectionKey sk = it.next();
                     if (sk.isReadable()) {
-                        ByteBuffer buffer = ByteBuffer.allocate(1025);
+                        ByteBuffer buffer = ByteBuffer.allocate(1024);
                         dChannel.receive(buffer);
                         buffer.flip();
                         System.out.println(new String(buffer.array(), 0, buffer.limit()));
@@ -51,15 +49,11 @@ public class TestNonBlockNIO2 {
             DatagramChannel dChannel = DatagramChannel.open();
             dChannel.configureBlocking(false);
             ByteBuffer buffer = ByteBuffer.allocate(1024);
-            Scanner sc = new Scanner(System.in);
-//            while (sc.hasNext()){
-//                String str = sc.next();
             String str = "啊哈哈哈哈";
             buffer.put((new Date().toString() + "\t" + str).getBytes());
             buffer.flip();
             dChannel.send(buffer, new InetSocketAddress("127.0.0.1", 9001));
             buffer.clear();
-//            }
 
             // 关闭连接
             dChannel.close();

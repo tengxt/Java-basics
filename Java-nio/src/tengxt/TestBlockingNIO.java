@@ -24,7 +24,7 @@ import java.nio.file.StandardOpenOption;
  *              |- Pipe.SinkChannel
  *              |- Pipe.SourceChannel
  * 2. 缓冲区（Buffer）: 负责数据的存取
- * 3. 选择器（Selector）：是 SelectableChannel 的多路复用器，用于监控是 SelectableChannel 的IO状况
+ * 3. 选择器（Selector）：是 SelectableChannel 的多路复用器，用于监控是 SelectableChannel 的 IO 状况
  */
 public class TestBlockingNIO { // 阻塞型 IO
 
@@ -32,12 +32,17 @@ public class TestBlockingNIO { // 阻塞型 IO
     @Test
     public void server(){
         try {
+            // 1. 获取通道
             ServerSocketChannel ssChannel = ServerSocketChannel.open();
             FileChannel outChannel = FileChannel.open(Paths.get("E:/2.jpg"),
                     StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+            // 2. 绑定连接
             ssChannel.bind(new InetSocketAddress(9999));
+            // 3. 获取客户端连接的通道
             SocketChannel sChannel = ssChannel.accept();
+            // 4. 分配指定大小的缓冲区
             ByteBuffer buffer = ByteBuffer.allocate(1024);
+            // 5. 接收客户端的数据，并保存在本地
             while (sChannel.read(buffer) != -1){
                 buffer.flip();
                 outChannel.write(buffer);
@@ -49,7 +54,7 @@ public class TestBlockingNIO { // 阻塞型 IO
             buffer.flip();
             sChannel.write(buffer);
 
-            // 关闭连接
+            // 6. 关闭连接
             sChannel.close();
             outChannel.close();
             ssChannel.close();
@@ -62,9 +67,14 @@ public class TestBlockingNIO { // 阻塞型 IO
     @Test
     public void client(){
         try {
-            SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 9999));
-            FileChannel inChannel = FileChannel.open(Paths.get("E:/1.jpg"), StandardOpenOption.READ);
+            // 1. 获取通道
+            SocketChannel socketChannel = SocketChannel.open(
+                    new InetSocketAddress("127.0.0.1", 9999));
+            FileChannel inChannel = FileChannel.open(
+                    Paths.get("E:/1.jpg"), StandardOpenOption.READ);
+            // 2. 分配指定大小的缓冲区
             ByteBuffer buffer = ByteBuffer.allocate(1024);
+            // 3. 读取本地文件，并发送到服务端
             while (inChannel.read(buffer) != -1 ){
                 buffer.flip();
                 socketChannel.write(buffer);
@@ -82,7 +92,7 @@ public class TestBlockingNIO { // 阻塞型 IO
                 buffer.clear();
             }
 
-            // 关闭连接
+            // 4. 关闭连接
             inChannel.close();
             socketChannel.close();
         } catch (IOException e) {
