@@ -1,9 +1,10 @@
-package org.fall.mapper;
+package tengxt.mapper;
 
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import tengxt.entity.Admin;
 import tengxt.entity.AdminExample;
+
+import java.util.List;
 
 public interface AdminMapper {
     int countByExample(AdminExample example);
