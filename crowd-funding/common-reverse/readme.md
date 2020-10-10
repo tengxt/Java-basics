@@ -1,6 +1,24 @@
 
-##### 基于mybatis 的逆向工程
-1 在 pom.xml 中导入依赖
+### 基于mybatis 的逆向工程
+​ 进行基于Maven的逆向工程（根据已存在的表，在项目中逆向生成对应的实体类、Mapper文件、Mapper接口）
+##### 建表
+```sql
+CREATE DATABASE project_rowd CHARACTER SET utf8;
+
+USE project_rowd;
+drop table if exists t_admin;				# 如果存在t_admin则删除存在的表  
+    CREATE TABLE t_admin (
+    id INT NOT NULL auto_increment,			# 主键
+    login_acct VARCHAR ( 255 ) NOT NULL,	# 登录账号
+    user_pswd CHAR ( 32 ) NOT NULL,			# 登录密码
+    user_name VARCHAR ( 255 ) NOT NULL,		# 昵称
+    email VARCHAR ( 255 ) NOT NULL,			# 邮件地址
+    create_time CHAR ( 19 ),				# 创建时间
+    PRIMARY KEY ( id ) 						# 设置主键
+);
+```
+
+##### 在 pom.xml 中导入依赖
 ```xml
 <!-- 控制Maven在构建过程中的相关配置 -->
     <build>
@@ -33,7 +51,7 @@
         </plugins>
     </build>
 ```
-2 编写 generatorConfig.xml 文件
+##### 编写 generatorConfig.xml 文件
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration
@@ -96,6 +114,3 @@
 文档类型定义报红(`http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd`）
 **解决方案**
 > https://www.cnblogs.com/yz-bky/p/12817330.html
-
-
-3 
