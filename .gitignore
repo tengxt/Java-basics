@@ -9,7 +9,8 @@
 */HELP.md
 
 # build application files
-/target/
+target/
+target/*/
 
 
 

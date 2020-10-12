@@ -7,3 +7,9 @@
 
 
 > [源码地址](https://www.bilibili.com/video/BV1bE411T7oZ)
+
+
+##### 遇到的问题
+*IDEA 中运行 Maven 聚合项目* 
+> [IntelliJ IDEA中创建Web聚合项目(Maven多模块项目)](https://cloud.tencent.com/developer/article/1081471)
+> 每次启动都得重新打包
