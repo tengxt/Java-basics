@@ -8,4 +8,6 @@ public interface AdminService {
     int saveAdmin(Admin admin);
 
     List<Admin> queryAll();
+
+    Admin getAdminByLoginAcct(String loginUser,String loginPwd);
 }

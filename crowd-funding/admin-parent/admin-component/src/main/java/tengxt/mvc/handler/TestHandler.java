@@ -13,8 +13,10 @@ import tengxt.entity.Admin;
 import tengxt.entity.ParamData;
 import tengxt.entity.Student;
 import tengxt.service.api.AdminService;
+import tengxt.util.CrowdUtil;
 import tengxt.util.ResultEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -63,16 +65,29 @@ public class TestHandler {
 
     @ResponseBody
     @RequestMapping("/send/array/object.json")
-    public ResultEntity<Student> testResultEntity(@RequestBody Student student) {
+    public ResultEntity<Student> testResultEntity(@RequestBody Student student,
+                                                  HttpServletRequest request) {
+
+        boolean judgeResult = CrowdUtil.judgeRequestType(request);
+
+        logger.info("judgeResult ==> " + judgeResult);
+
         logger.info("Student ==>" + student.toString());
         return ResultEntity.successWithData(student);
     }
 
 
     @RequestMapping("/test/ssm.html")
-    public String testSSM(ModelMap modelMap) {
+    public String testSSM(ModelMap modelMap, HttpServletRequest request) {
+
+        boolean judgeResult = CrowdUtil.judgeRequestType(request);
+
+        logger.info("judgeResult ==> " + judgeResult);
+
         List<Admin> adminList = adminService.queryAll();
         modelMap.addAttribute("adminList", adminList);
+
+        System.out.println(10 / 0);
         return "target";
     }
 }
