@@ -87,7 +87,7 @@ public class TestHandler {
         List<Admin> adminList = adminService.queryAll();
         modelMap.addAttribute("adminList", adminList);
 
-        System.out.println(10 / 0);
+//        System.out.println(10 / 0);
         return "target";
     }
 }

@@ -13,7 +13,7 @@
 <body>
     <h1>临时主页面</h1>
 
-    <p>昵称： ${requestScope.loginAdmin.userName}</p>
+    <p>昵称： ${sessionScope.loginAdmin.userName}</p>
 
 </body>
 </html>
