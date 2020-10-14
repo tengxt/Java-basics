@@ -20,4 +20,7 @@ public interface AdminMapper {
     int updateByExampleSelective(@Param("record") Admin record, @Param("example") AdminExample example);
 
     int updateByExample(@Param("record") Admin record, @Param("example") AdminExample example);
+
+    List<Admin> selectAdminByKeyword(String keyword);
+
 }

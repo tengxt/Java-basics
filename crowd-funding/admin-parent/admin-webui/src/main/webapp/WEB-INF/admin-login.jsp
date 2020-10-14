@@ -29,7 +29,7 @@
 
 <div class="container">
 
-    <form action="security/do/login.html" method="post" class="form-signin" role="form">
+    <form action="admin/login/doLogin.html" method="post" class="form-signin" role="form">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2>
         <p>${requestScope.exception.message}</p>
         <p>${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
@@ -38,10 +38,10 @@
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <input type="text" name="login-pwd" class="form-control" placeholder="请输入登录密码" style="margin-top:10px;">
+            <input type="password" name="login-pwd" class="form-control" placeholder="请输入登录密码" style="margin-top:10px;">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         </div>
-        <div class="checkbox" style="text-align:right;"><a href="reg.html">我要注册</a></div>
+        <div class="checkbox" style="text-align:right;"><a href="admin/register.html">我要注册</a></div>
         <button type="submit" class="btn btn-lg btn-success btn-block">登录</button>
     </form>
 </div>

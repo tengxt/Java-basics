@@ -11,6 +11,7 @@ import tengxt.entity.Admin;
 import tengxt.entity.AdminExample;
 import tengxt.mapper.AdminMapper;
 import tengxt.service.api.AdminService;
+import tengxt.util.CrowdUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -33,6 +34,16 @@ public class TestConnection {
 
     @Autowired
     private AdminService adminService;
+
+
+    @Test
+    public void testIns(){
+        for (int i = 0; i < 238; i++) {
+            String userpswd = CrowdUtil.md5("userpswd"+i);
+            Admin admin = new Admin(null,"loginAcct"+i,userpswd,"userName"+i,"email"+i+"qq.com",null);
+            adminMapper.insert(admin);
+        }
+    }
 
     @Test
     public void testTx() {

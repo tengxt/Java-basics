@@ -1,5 +1,7 @@
 package tengxt.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tengxt.constant.CrowdConstant;
@@ -58,5 +60,26 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return admin;
+    }
+
+    /**
+     * @param keyword 关键字
+     * @param pageNum 当前页码
+     * @param pageSize 每一页显示的信息数量
+     * @return 最后的pageInfo对象
+     */
+    @Override
+    public PageInfo<Admin> getPageInfo(String keyword, Integer pageNum, Integer pageSize) {
+        // 利用 PageHelper 的静态方法开启分页
+        PageHelper.startPage(pageNum,pageSize);
+
+        // 调用 Mapper 接口的对应方法
+        List<Admin> admins = adminMapper.selectAdminByKeyword(keyword);
+
+        // 为了方便页面的使用，把 Admin 的List封装成 PageInfo
+        PageInfo<Admin> pageInfo = new PageInfo<>(admins);
+
+        // 返回得到的pageInfo对象
+        return pageInfo;
     }
 }

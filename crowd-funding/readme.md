@@ -13,3 +13,7 @@
 *IDEA 中运行 Maven 聚合项目* 
 > [IntelliJ IDEA中创建Web聚合项目(Maven多模块项目)](https://cloud.tencent.com/developer/article/1081471)
 > 每次启动都得重新打包
+
+* 模糊查询和全量查询共用的SQL语句 *
+> where searchName like concat("%", #{keyword}, "%");
+

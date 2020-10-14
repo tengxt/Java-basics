@@ -18,7 +18,8 @@
     </bean>
 
     <!--基于XML的异常映射-->
-    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" id="simpleMappingExceptionResolver">
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"
+          id="simpleMappingExceptionResolver">
         <property name="exceptionMappings">
             <props>
                 <prop key="java.lang.Exception">system-error</prop>
@@ -28,4 +29,23 @@
 
     <!--通过view-controller 来设置一些直接的页面跳转-->
     <mvc:view-controller path="/admin/login/page.html" view-name="admin-login"/>
+    <mvc:view-controller path="/admin/admin/page.html" view-name="admin-main"/>
+    <mvc:view-controller path="/admin/register.html" view-name="admin-register"/>
+
+    <!--在mvc容器中注册拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!-- mapping 表示拦截的路径 -->
+            <mvc:mapping path="/**"/>
+            <!-- exclude-mapping表示例外（即不会被拦截器拦截） -->
+            <mvc:exclude-mapping path="/admin/login/page.html"/>
+            <mvc:exclude-mapping path="/admin/login/logout.html"/>
+            <mvc:exclude-mapping path="/admin/login/doLogin.html"/>
+            <mvc:exclude-mapping path="/admin/register.html"/>
+            <mvc:exclude-mapping path="/admin/doRegister.json"/>
+
+            <!-- 配置拦截器的类 -->
+            <bean class="tengxt.mvc.interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>
