@@ -64,15 +64,18 @@
             "url": "admin/doRegister.json",
             "type": "post",
             "data": paramData,
-            "contentType":"application/json;charset=UTF-8",
+            "contentType": "application/json;charset=UTF-8",
             "dataType": "json",
             "success": function (response) {
-                layer.msg(response.result);
-                console.log(response);
+                if (response.result == 'SUCCESS') {
+                    layer.msg("注册成功,请重新登录");
+                    window.location.href = "/admin-webui/admin/login/page.html";
+                } else {
+                    layer.msg(response.message);
+                }
             },
-        "error": function (response) {
-            layer.msg(response.message);
-            console.log(response);
+            "error": function (response) {
+                layer.msg(response.message);
             }
         })
     });

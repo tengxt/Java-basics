@@ -12,6 +12,8 @@ import tengxt.mapper.AdminMapper;
 import tengxt.service.api.AdminService;
 import tengxt.util.CrowdUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +24,18 @@ public class AdminServiceImpl implements AdminService {
     private AdminMapper adminMapper;
 
     public int saveAdmin(Admin admin) {
+        // 密码加密
+        String pswd = admin.getUserPswd();
+        pswd = CrowdUtil.md5(pswd);
+        admin.setUserPswd(pswd);
+
+        // 生成创建时间
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String createTime = format.format(date);
+        admin.setCreateTime(createTime);
+
+        // 保存
         return adminMapper.insert(admin);
     }
 
@@ -81,5 +95,13 @@ public class AdminServiceImpl implements AdminService {
 
         // 返回得到的pageInfo对象
         return pageInfo;
+    }
+
+    @Override
+    public int removeById(Integer adminId) {
+        AdminExample example = new AdminExample();
+        AdminExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(adminId);
+        return adminMapper.deleteByExample(example);
     }
 }

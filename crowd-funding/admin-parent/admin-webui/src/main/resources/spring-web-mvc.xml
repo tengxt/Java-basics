@@ -31,6 +31,7 @@
     <mvc:view-controller path="/admin/login/page.html" view-name="admin-login"/>
     <mvc:view-controller path="/admin/admin/page.html" view-name="admin-main"/>
     <mvc:view-controller path="/admin/register.html" view-name="admin-register"/>
+    <mvc:view-controller path="/admin/page/save.html" view-name="admin-add"/>
 
     <!--在mvc容器中注册拦截器-->
     <mvc:interceptors>

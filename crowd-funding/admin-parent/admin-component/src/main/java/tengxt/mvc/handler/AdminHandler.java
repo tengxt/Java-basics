@@ -11,14 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import tengxt.constant.CrowdConstant;
 import tengxt.entity.Admin;
 import tengxt.service.api.AdminService;
-import tengxt.util.CrowdUtil;
 import tengxt.util.ResultEntity;
 
 import javax.servlet.http.HttpSession;
@@ -34,22 +30,21 @@ public class AdminHandler {
     private AdminService adminService;
 
     @RequestMapping("/admin/doRegister.json")
+    @ResponseBody
     public ResultEntity<String> doRegister(@RequestBody String paramData) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> jsonMap = null;
         try {
-            jsonMap = mapper.readValue(paramData, new TypeReference<Map<String, Object>>() {
-            });
-
+            jsonMap = mapper.readValue(paramData, new TypeReference<Map<String, Object>>() {});
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error("doRegister method exception" + e.getMessage());
         }
 
-        if (null != jsonMap) {
-            String loginUser = (String) jsonMap.get("loginUser");
-            String loginPwd = (String) jsonMap.get("loginPwd");
-            String loginPwdAgain = (String) jsonMap.get("loginPwdAgain");
-            String loginEmail = (String) jsonMap.get("loginEmail");
+        if (!jsonMap.isEmpty()) {
+            String loginUser = (String) jsonMap.get("login-user");
+            String loginPwd = (String) jsonMap.get("login-pwd");
+            String loginPwdAgain = (String) jsonMap.get("login-pwd-again");
+            String loginEmail = (String) jsonMap.get("login-email");
             // 非空判断
             if (StringUtils.isEmpty(loginUser) || StringUtils.isEmpty(loginPwd)
                     || StringUtils.isEmpty(loginPwdAgain) || StringUtils.isEmpty(loginEmail)) {
@@ -62,7 +57,7 @@ public class AdminHandler {
                 return ResultEntity.failed("两次输入的密码不一致，请重新输入");
             }
 
-            Admin admin = new Admin(null, loginUser, CrowdUtil.md5(loginPwd), loginUser, loginEmail, null);
+            Admin admin = new Admin(null, loginUser, loginPwd, loginUser, loginEmail, null);
             int number = adminService.saveAdmin(admin);
 
             logger.info(number > 0 ? "添加数据成功" : "添加数据失败");
@@ -95,6 +90,14 @@ public class AdminHandler {
         return "redirect:/admin/login/page.html";
     }
 
+    /**
+     * 分页显示&搜索
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @param modelMap
+     * @return
+     */
     @RequestMapping("/admin/page/page.html")
     public String getAdminPage(
             // 传入的关键字，若未传入，默认值为一个空字符串（不能是null）
@@ -114,5 +117,45 @@ public class AdminHandler {
 
         // 进入对应的显示管理员信息的页面（/WEB-INF/admin-page.jsp）
         return "admin-page";
+    }
+
+    /**
+     * 单条删除
+     * @param adminId
+     * @param pageNum
+     * @param keyword
+     * @param session
+     * @return
+     */
+    @RequestMapping("/admin/page/remove/{adminId}/{pageNum}/{keyword}.html")
+    public String removeById(@PathVariable("adminId") Integer adminId,
+                             @PathVariable("pageNum") Integer pageNum,
+                             @PathVariable("keyword") String keyword,
+                             HttpSession session) {
+        // 获取登录的用户信息
+        Admin admin = (Admin) session.getAttribute(CrowdConstant.LOGIN_ADMIN_NAME);
+        if (null == admin) {
+            // 为获取到用户信息则跳转到登陆页面
+            return "redirect:/admin/login/page.html";
+        }
+        // 判断删除的用户Id和登录用户的Id是否一致
+        Integer loginId = admin.getId();
+        if (Objects.equals(adminId, loginId)) {
+            throw new RuntimeException("操作无效，请重新操作");
+        }
+        int removeById = adminService.removeById(adminId);
+        logger.info(removeById > 0 ? "删除成功" : "删除失败");
+        // 为了保持原本所在页面和查询关键字再附加pageNum和keyword参数
+        return "redirect:/admin/page/page.html?pageNum=" + pageNum + "&keyword=" + keyword;
+    }
+
+    @RequestMapping("/admin/page/doSave.html")
+    public String doSave(Admin admin) {
+        if(null == admin) {
+            throw new RuntimeException(CrowdConstant.MESSAGE_STRING_INVALIDATE);
+        }
+        int saveAdmin = adminService.saveAdmin(admin);
+        logger.info(saveAdmin > 0 ? "创建成功" : "创建失败");
+        return "redirect:/admin/page/page.html?pageNum=" + Integer.MAX_VALUE;
     }
 }

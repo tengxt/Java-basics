@@ -13,4 +13,6 @@ public interface AdminService {
     Admin getAdminByLoginAcct(String loginUser,String loginPwd);
 
     PageInfo<Admin> getPageInfo(String keyword, Integer pageNum, Integer pageSize);
+
+    int removeById(Integer adminId);
 }
