@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import tengxt.constant.CrowdConstant;
+import tengxt.exception.LoginAcctAlreadyInUseException;
+import tengxt.exception.LoginAcctAlreadyInUseForUpdateException;
+import tengxt.exception.LoginFailedException;
 import tengxt.util.CrowdUtil;
 import tengxt.util.ResultEntity;
 
@@ -14,6 +17,16 @@ import java.io.IOException;
 
 @ControllerAdvice
 public class CrowdExceptionResolver {
+
+
+    // 处理其他异常
+    @ExceptionHandler(value = {Exception.class})
+    public ModelAndView resolveException(Exception exception,
+                                         HttpServletRequest request, HttpServletResponse response
+    ) throws IOException {
+        return commonCode(exception,request,response,"system-error");
+    }
+
     //处理空指针异常
     @ExceptionHandler(value = {NullPointerException.class})
     public ModelAndView resolveNullPointerException(NullPointerException exception,
@@ -28,6 +41,34 @@ public class CrowdExceptionResolver {
                                                    HttpServletRequest request, HttpServletResponse response) throws IOException {
         return commonCode(exception, request, response, "system-error");
 
+    }
+
+    // 触发登录失败异常，则继续返回登陆页面
+    @ExceptionHandler(value = LoginFailedException.class)
+    public ModelAndView resolverLoginFailedException(
+            LoginFailedException exception, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        String viewName = "admin-login";
+        return commonCode(exception,request,response,viewName);
+    }
+
+
+    // 新增管理员时，login_acct已存在，则返回admin-add.jsp页面
+    @ExceptionHandler(value = LoginAcctAlreadyInUseException.class)
+    public ModelAndView resolverLoginAcctAlreadyInUseException(
+            LoginAcctAlreadyInUseException exception, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        String viewName = "admin-add";
+        return commonCode(exception,request,response,viewName);
+    }
+
+    // 更新时，不应将账号改为与其他账号同名
+    @ExceptionHandler(value = LoginAcctAlreadyInUseForUpdateException.class)
+    public ModelAndView resolverLoginAcctAlreadyInUseForUpdateException(
+            LoginAcctAlreadyInUseForUpdateException exception, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        String viewName = "system-error";
+        return commonCode(exception,request,response,viewName);
     }
 
     //整理出的不同异常的可重用代码

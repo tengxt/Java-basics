@@ -3,10 +3,14 @@ package tengxt.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import tengxt.constant.CrowdConstant;
 import tengxt.entity.Admin;
 import tengxt.entity.AdminExample;
+import tengxt.entity.AdminExample.Criteria;
+import tengxt.exception.LoginAcctAlreadyInUseException;
+import tengxt.exception.LoginAcctAlreadyInUseForUpdateException;
 import tengxt.exception.LoginFailedException;
 import tengxt.mapper.AdminMapper;
 import tengxt.service.api.AdminService;
@@ -34,9 +38,18 @@ public class AdminServiceImpl implements AdminService {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String createTime = format.format(date);
         admin.setCreateTime(createTime);
-
+        int saveAdmin = 0;
         // 保存
-        return adminMapper.insert(admin);
+        try {
+            saveAdmin = adminMapper.insert(admin);
+        } catch (Exception e) {
+            // 这里出现异常的话一般就是DuplicateKeyException（因为插入的loginAcct已存在而触发）
+            if (e instanceof DuplicateKeyException) {
+                // 如果确实是DuplicateKeyException，此时抛出一个自定义的异常
+                throw new LoginAcctAlreadyInUseException(CrowdConstant.MESSAGE_SYSTEM_ERROR_LOGIN_NOT_UNIQUE);
+            }
+        }
+        return saveAdmin;
     }
 
     public List<Admin> queryAll() {
@@ -46,7 +59,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Admin getAdminByLoginAcct(String loginUser, String loginPwd) {
         AdminExample example = new AdminExample();
-        AdminExample.Criteria criteria = example.createCriteria();
+        Criteria criteria = example.createCriteria();
         criteria.andLoginAcctEqualTo(loginUser);
         List<Admin> adminList = adminMapper.selectByExample(example);
         if (adminList == null || adminList.size() == 0) {
@@ -77,15 +90,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * @param keyword 关键字
-     * @param pageNum 当前页码
+     * @param keyword  关键字
+     * @param pageNum  当前页码
      * @param pageSize 每一页显示的信息数量
      * @return 最后的pageInfo对象
      */
     @Override
     public PageInfo<Admin> getPageInfo(String keyword, Integer pageNum, Integer pageSize) {
         // 利用 PageHelper 的静态方法开启分页
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
 
         // 调用 Mapper 接口的对应方法
         List<Admin> admins = adminMapper.selectAdminByKeyword(keyword);
@@ -100,8 +113,33 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public int removeById(Integer adminId) {
         AdminExample example = new AdminExample();
-        AdminExample.Criteria criteria = example.createCriteria();
+        Criteria criteria = example.createCriteria();
         criteria.andIdEqualTo(adminId);
         return adminMapper.deleteByExample(example);
+    }
+
+    @Override
+    public List<Admin> queryById(Integer adminId) {
+        AdminExample example = new AdminExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(adminId);
+        return adminMapper.selectByExample(example);
+    }
+
+    @Override
+    public int updateAdmin(Admin admin) {
+        AdminExample example = new AdminExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(admin.getId());
+        int updateAdmin = 0;
+        try {
+            updateAdmin = adminMapper.updateByExampleSelective(admin, example);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException) {
+                // 如果确实是DuplicateKeyException，此时抛出一个自定义的异常
+                throw new LoginAcctAlreadyInUseForUpdateException(CrowdConstant.MESSAGE_SYSTEM_ERROR_LOGIN_NOT_UNIQUE);
+            }
+        }
+        return updateAdmin;
     }
 }
