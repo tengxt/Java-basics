@@ -9,7 +9,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import tengxt.entity.Admin;
 import tengxt.entity.AdminExample;
+import tengxt.entity.Role;
 import tengxt.mapper.AdminMapper;
+import tengxt.mapper.RoleMapper;
 import tengxt.service.api.AdminService;
 import tengxt.util.CrowdUtil;
 
@@ -34,6 +36,16 @@ public class TestConnection {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private RoleMapper roleMapper;
+
+    @Test
+    public void testRoles() {
+        for (int i = 0; i < 235; i++) {
+            roleMapper.insert(new Role(null, "role" + i));
+        }
+    }
 
 
     @Test

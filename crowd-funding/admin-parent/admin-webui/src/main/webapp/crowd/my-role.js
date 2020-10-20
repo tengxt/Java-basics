@@ -131,8 +131,6 @@ function paginationCallback(pageIndex, jQuery){
 
 }
 
-
-
 // 打开确认删除的模态框
 function showConfirmModal(roleArray){
     // 显示模态框
