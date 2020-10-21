@@ -51,6 +51,6 @@
         </javaClientGenerator>
 
         <!-- 数据库表名与需要的实体类对应映射的指定 -->
-        <table tableName="t_role" domainObjectName="Role"/>
+        <table tableName="t_menu" domainObjectName="Menu"/>
     </context>
 </generatorConfiguration>
