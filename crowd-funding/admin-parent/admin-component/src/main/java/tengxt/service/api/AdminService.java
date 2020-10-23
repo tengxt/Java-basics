@@ -19,4 +19,6 @@ public interface AdminService {
     List<Admin> queryById(Integer adminId);
 
     int updateAdmin(Admin admin);
+
+    void saveAdminRoleRelationship(Integer adminId, List<Integer> roleIdList);
 }

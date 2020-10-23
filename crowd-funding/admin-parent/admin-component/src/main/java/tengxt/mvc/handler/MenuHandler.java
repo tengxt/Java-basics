@@ -11,22 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@Controller
-//@ResponseBody
 @RestController
 public class MenuHandler {
 
     @Autowired
     private MenuService menuService;
 
-//    @ResponseBody
     @RequestMapping("/menu/remove.json")
     public ResultEntity<String> removeMenu(Integer id) {
         menuService.removeMenuById(id);
         return ResultEntity.successWithoutData();
     }
 
-//    @ResponseBody
     @RequestMapping("/menu/edit.json")
     public ResultEntity<String> editMenu(Menu menu) {
         menuService.updateMenu(menu);
@@ -34,14 +30,12 @@ public class MenuHandler {
     }
 
 
-//    @ResponseBody
     @RequestMapping("/menu/save.json")
     public ResultEntity<String> saveMenu(Menu menu) {
         menuService.saveMenu(menu);
         return ResultEntity.successWithoutData();
     }
 
-//    @ResponseBody
     @RequestMapping("/menu/do/get.json")
     public ResultEntity<Menu> getWholeTree() {
         // 通过service层方法得到全部Menu对象的List

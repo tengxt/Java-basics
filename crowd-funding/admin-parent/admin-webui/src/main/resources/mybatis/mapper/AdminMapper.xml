@@ -99,6 +99,15 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+  <delete id="deleteOldRelationship">
+    DELETE FROM inner_admin_role WHERE admin_id=#{adminId}
+  </delete>
+  <insert id="insertNewRelationship">
+    INSERT INTO inner_admin_role(admin_id,role_id) VALUES
+    <foreach collection="roleIdList" item="roleId" separator=",">
+      (#{adminId},#{roleId})
+    </foreach>
+  </insert>
   <insert id="insert" parameterType="tengxt.entity.Admin" >
     insert into t_admin (id, login_acct, user_pswd, 
       user_name, email, create_time

@@ -72,6 +72,18 @@
     FROM t_role
     WHERE name LIKE CONCAT("%",#{keyword},"%")
   </select>
+  <select id="selectAssignedRole" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM t_role
+    WHERE id IN (SELECT role_id FROM inner_admin_role WHERE admin_id = #{adminId})
+  </select>
+  <select id="selectUnAssignedRole" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM t_role
+    WHERE id NOT IN (SELECT role_id FROM inner_admin_role WHERE admin_id = #{adminId})
+  </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="tengxt.entity.RoleExample" >
     select
     <if test="distinct" >

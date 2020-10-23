@@ -17,6 +17,17 @@ public class RoleServiceImpl implements RoleService{
     @Autowired
     private RoleMapper roleMapper;
 
+
+    @Override
+    public List<Role> getAssignedRole(Integer adminId) {
+        return roleMapper.selectAssignedRole(adminId);
+    }
+
+    @Override
+    public List<Role> getUnAssignedRole(Integer adminId) {
+        return roleMapper.selectUnAssignedRole(adminId);
+    }
+
     @Override
     public PageInfo<Role> getPageInfo(Integer pageNum, Integer pageSize, String keyword) {
         // 开启分页

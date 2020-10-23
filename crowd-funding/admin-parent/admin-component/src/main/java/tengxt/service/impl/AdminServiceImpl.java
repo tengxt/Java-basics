@@ -27,6 +27,18 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private AdminMapper adminMapper;
 
+    @Override
+    public void saveAdminRoleRelationship(Integer adminId, List<Integer> roleIdList) {
+        // 根据adminId删除旧的关联关系数据
+        adminMapper.deleteOldRelationship(adminId);
+        // 根据roleIdList和adminId保存新的关联关系
+        if(null != roleIdList && roleIdList.size() > 0){
+            adminMapper.insertNewRelationship(adminId,roleIdList);
+        }
+
+
+    }
+
     public int saveAdmin(Admin admin) {
         // 密码加密
         String pswd = admin.getUserPswd();
