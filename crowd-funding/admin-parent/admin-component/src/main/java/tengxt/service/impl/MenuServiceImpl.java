@@ -10,7 +10,7 @@ import tengxt.service.api.MenuService;
 import java.util.List;
 
 @Service
-public class MenuServiceImpl implements MenuService {
+public class MenuServiceImpl implements MenuService{
 
     @Autowired
     private MenuMapper menuMapper;
@@ -24,5 +24,21 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public int saveMenu(Menu menu) {
         return menuMapper.insert(menu);
+    }
+
+    @Override
+    public int updateMenu(Menu menu) {
+        MenuExample example = new MenuExample();
+        MenuExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(menu.getId());
+        return menuMapper.updateByExampleSelective(menu, example);
+    }
+
+    @Override
+    public int removeMenuById(Integer id) {
+        MenuExample example = new MenuExample();
+        MenuExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(id);
+        return menuMapper.deleteByExample(example);
     }
 }

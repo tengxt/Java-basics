@@ -27,7 +27,6 @@ public class TestHandler {
     @Autowired
     private AdminService adminService;
 
-
     @ResponseBody
     @RequestMapping("/send/array/one.html")
     public String testReceiveArrayOne(@RequestParam("array[]") List<Integer> array) {
