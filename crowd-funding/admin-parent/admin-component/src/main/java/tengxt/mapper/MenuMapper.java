@@ -20,4 +20,6 @@ public interface MenuMapper {
     int updateByExampleSelective(@Param("record") Menu record, @Param("example") MenuExample example);
 
     int updateByExample(@Param("record") Menu record, @Param("example") MenuExample example);
+
+
 }

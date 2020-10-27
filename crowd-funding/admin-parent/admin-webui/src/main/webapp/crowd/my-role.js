@@ -1,31 +1,31 @@
 ﻿// 执行分页，生成分页效果
-function generatePage(){
+function generatePage() {
     var pageInfo = getPageInfoRemote();
 
     fillTableTBody(pageInfo);
 }
 
 // 从远程服务器端获取PageInfo数据
-function getPageInfoRemote(){
+function getPageInfoRemote() {
 
     // 调用$.ajax()函数发送请求，并用ajaxResult接收函数返回值
     var ajaxResult = $.ajax({
-        url:"role/page/page.json",
-        type:"post",
-        data:{
-            "pageNum":window.pageNum,
-            "pageSize":window.pageSize,
-            "keyword":window.keyword
+        url: "role/page/page.json",
+        type: "post",
+        data: {
+            "pageNum": window.pageNum,
+            "pageSize": window.pageSize,
+            "keyword": window.keyword
         },
-        async:false,        //关闭异步模式，使用同步
-        dataType:"json"
+        async: false,        //关闭异步模式，使用同步
+        dataType: "json"
     });
 
     // 取得当前的响应状态码
     var statusCode = ajaxResult.status;
 
     // 判断当前状态码是不是200，不是200表示发生错误，通过layer提示错误消息
-    if(statusCode != 200) {
+    if (statusCode != 200) {
         layer.msg("失败！状态码=" + statusCode + "错误信息=" + ajaxResult.statusText);
         return null;
     }
@@ -52,7 +52,7 @@ function getPageInfoRemote(){
 }
 
 // 根据PageInfo填充表格
-function fillTableTBody(pageInfo){
+function fillTableTBody(pageInfo) {
 
     // 清除tbody中的旧内容
     $("#rolePageTBody").empty();
@@ -72,18 +72,18 @@ function fillTableTBody(pageInfo){
         var role = pageInfo.list[i];
         var roleId = role.id;
         var roleName = role.name;
-        var numberTd = "<td>"+(i+1)+"</td>";
-        var checkboxTd = "<td><input type='checkbox' id='"+roleId+"' class='itemBox'/></td>";
+        var numberTd = "<td>" + (i + 1) + "</td>";
+        var checkboxTd = "<td><input type='checkbox' id='" + roleId + "' class='itemBox'/></td>";
         var roleNameTd = "<td>" + roleName + "</td>";
 
-        var checkBtn = "<button type='button' id='"+roleId+"' class='btn btn-success btn-xs checkBtn'><i class=' glyphicon glyphicon-check'></i></button>"
+        var checkBtn = "<button type='button' id='" + roleId + "' class='btn btn-success btn-xs checkBtn'><i class=' glyphicon glyphicon-check'></i></button>"
 
         // 铅笔按钮用于修改role信息。用id属性（也可以是其他属性）携带当前的角色的id，class添加一个pencilBtn，方便添加响应函数
-        var pencilBtn = "<button type='button' id='"+roleId+"' class='btn btn-primary btn-xs pencilBtn'><i class=' glyphicon glyphicon-pencil'></i></button>"
+        var pencilBtn = "<button type='button' id='" + roleId + "' class='btn btn-primary btn-xs pencilBtn'><i class=' glyphicon glyphicon-pencil'></i></button>"
 
-        var removeBtn = "<button type='button' id='"+roleId+"' class='btn btn-danger btn-xs removeBtn'><i class=' glyphicon glyphicon-remove'></i></button>"
+        var removeBtn = "<button type='button' id='" + roleId + "' class='btn btn-danger btn-xs removeBtn'><i class=' glyphicon glyphicon-remove'></i></button>"
 
-        var buttonTd = "<td>"+checkBtn + " " + pencilBtn + " " + removeBtn + "</td>";
+        var buttonTd = "<td>" + checkBtn + " " + pencilBtn + " " + removeBtn + "</td>";
         var tr = "<tr>" + numberTd + checkboxTd + roleNameTd + buttonTd + "</tr>";
 
         $("#rolePageTBody").append(tr);
@@ -95,7 +95,7 @@ function fillTableTBody(pageInfo){
 }
 
 // 生成分页页码导航条
-function generateNavigator(pageInfo){
+function generateNavigator(pageInfo) {
 
 
     //获取分页数据中的总记录数
@@ -106,22 +106,22 @@ function generateNavigator(pageInfo){
         num_edge_entries: 3,                                //边缘页数
         num_display_entries: 5,                             //主体页数
         callback: paginationCallback,                       //点击各种翻页反扭时触发的回调函数（执行翻页操作）
-        current_page: (pageInfo.pageNum-1),                 //当前页码
+        current_page: (pageInfo.pageNum - 1),                 //当前页码
         prev_text: "上一页",                                 //在对应上一页操作的按钮上的文本
         next_text: "下一页",                                 //在对应下一页操作的按钮上的文本
         items_per_page: pageInfo.pageSize   //每页显示的数量
     };
 
-    $("#Pagination").pagination(totalRecord,properties);
+    $("#Pagination").pagination(totalRecord, properties);
 
 
 }
 
 // 翻页时的回调函数
-function paginationCallback(pageIndex, jQuery){
+function paginationCallback(pageIndex, jQuery) {
 
     // pageIndex是当前页码的索引，因此比pageNum小1
-    window.pageNum = pageIndex+1;
+    window.pageNum = pageIndex + 1;
 
     // 重新执行分页代码
     generatePage();
@@ -132,7 +132,7 @@ function paginationCallback(pageIndex, jQuery){
 }
 
 // 打开确认删除的模态框
-function showConfirmModal(roleArray){
+function showConfirmModal(roleArray) {
     // 显示模态框
     $("#confirmRoleModal").modal("show");
 
@@ -143,7 +143,7 @@ function showConfirmModal(roleArray){
     window.roleIdArray = [];
 
     // 填充数据
-    for (var i = 0; i < roleArray.length; i++){
+    for (var i = 0; i < roleArray.length; i++) {
 
         var roleId = roleArray[i].id;
 
@@ -152,13 +152,13 @@ function showConfirmModal(roleArray){
 
         var roleName = roleArray[i].name;
 
-        $("#confirmList").append(roleName+"<br/>");
+        $("#confirmList").append(roleName + "<br/>");
     }
 
 }
 
 // 生成权限信息的树形结构
-function generateAuthTree(){
+function generateAuthTree() {
 
     var ajaxReturn = $.ajax({
         url: "assign/get/tree.json",
@@ -167,18 +167,18 @@ function generateAuthTree(){
         dataType: "json"
     });
 
-    if (ajaxReturn.status != 200){
-        layer.msg("请求出错！错误码："+ ajaxReturn.status + "错误信息：" + ajaxReturn.statusText);
-        return ;
+    if (ajaxReturn.status != 200) {
+        layer.msg("请求出错！错误码：" + ajaxReturn.status + "错误信息：" + ajaxReturn.statusText);
+        return;
     }
 
     var resultEntity = ajaxReturn.responseJSON;
 
-    if (resultEntity.result == "FAILED"){
-        layer.msg("操作失败！"+resultEntity.message);
+    if (resultEntity.result == "FAILED") {
+        layer.msg("操作失败！" + resultEntity.message);
     }
 
-    if (resultEntity.result == "SUCCESS"){
+    if (resultEntity.result == "SUCCESS") {
         var authList = resultEntity.data;
         // 将服务端查询到的list交给zTree自己组装
         var setting = {
@@ -191,12 +191,12 @@ function generateAuthTree(){
                 },
                 key: {
                     // 设置在前端显示的节点名是查询到的title，而不是使用默认的name
-                    name:"title"
+                    name: "title"
                 },
             },
 
             check: {
-                enable:true
+                enable: true
             }
         };
 
@@ -215,32 +215,32 @@ function generateAuthTree(){
             type: "post",
             dataType: "json",
             async: false,
-            data:{
-                "roleId":window.roleId
+            data: {
+                "roleId": window.roleId
             }
         });
 
-        if (ajaxReturn.status != 200){
-            layer.msg("请求出错！错误码："+ ajaxReturn.status + "错误信息：" + ajaxReturn.statusText);
-            return ;
+        if (ajaxReturn.status != 200) {
+            layer.msg("请求出错！错误码：" + ajaxReturn.status + "错误信息：" + ajaxReturn.statusText);
+            return;
         }
 
         resultEntity = ajaxReturn.responseJSON;
 
-        if (resultEntity.result == "FAILED"){
-            layer.msg("操作失败！"+resultEntity.message);
+        if (resultEntity.result == "FAILED") {
+            layer.msg("操作失败！" + resultEntity.message);
         }
 
-        if (resultEntity.result == "SUCCESS"){
+        if (resultEntity.result == "SUCCESS") {
             var authIdArray = resultEntity.data;
 
             // 遍历得到的autoId的数组
             // 根据authIdArray勾选对应的节点
-            for (var i = 0; i < authIdArray.length; i++){
+            for (var i = 0; i < authIdArray.length; i++) {
                 var authId = authIdArray[i];
 
                 // 通过id得到treeNode
-                var treeNode = zTreeObj.getNodeByParam("id",authId);
+                var treeNode = zTreeObj.getNodeByParam("id", authId);
 
                 // checked设置为true，表示勾选节点
                 var checked = true;
@@ -250,7 +250,7 @@ function generateAuthTree(){
                 var checkTypeFlag = false;
 
                 // 执行勾选操作
-                zTreeObj.checkNode(treeNode,checked,checkTypeFlag);
+                zTreeObj.checkNode(treeNode, checked, checkTypeFlag);
             }
         }
 

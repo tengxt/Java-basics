@@ -32,8 +32,8 @@ public class AdminServiceImpl implements AdminService {
         // 根据adminId删除旧的关联关系数据
         adminMapper.deleteOldRelationship(adminId);
         // 根据roleIdList和adminId保存新的关联关系
-        if(null != roleIdList && roleIdList.size() > 0){
-            adminMapper.insertNewRelationship(adminId,roleIdList);
+        if (null != roleIdList && roleIdList.size() > 0) {
+            adminMapper.insertNewRelationship(adminId, roleIdList);
         }
 
 
@@ -78,6 +78,7 @@ public class AdminServiceImpl implements AdminService {
             throw new LoginFailedException(CrowdConstant.MESSAGE_LOGIN_FAILED);
         }
 
+        // 存在多条数据，则抛异常
         if (adminList.size() > 1) {
             throw new RuntimeException(CrowdConstant.MESSAGE_ERROR_NOT_UNIQUE);
         }
@@ -111,13 +112,10 @@ public class AdminServiceImpl implements AdminService {
     public PageInfo<Admin> getPageInfo(String keyword, Integer pageNum, Integer pageSize) {
         // 利用 PageHelper 的静态方法开启分页
         PageHelper.startPage(pageNum, pageSize);
-
         // 调用 Mapper 接口的对应方法
         List<Admin> admins = adminMapper.selectAdminByKeyword(keyword);
-
         // 为了方便页面的使用，把 Admin 的List封装成 PageInfo
         PageInfo<Admin> pageInfo = new PageInfo<>(admins);
-
         // 返回得到的pageInfo对象
         return pageInfo;
     }
