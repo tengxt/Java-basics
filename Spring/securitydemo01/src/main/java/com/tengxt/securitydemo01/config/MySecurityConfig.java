@@ -14,9 +14,9 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String password = passwordEncoder.encode("123");
         auth.inMemoryAuthentication()
-                .withUser("lucy")
-                .password(password)
-                .roles("admin");
+            .withUser("lucy")
+            .password(password)
+            .roles("admin");
     }
 
 
