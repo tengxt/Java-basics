@@ -3,7 +3,7 @@
 Spring 是非常流行和成功的 Java 应用开发框架，Spring Security 正是 Spring 家族中的成员。Spring Security 基于 Spring 框架，提供了一套 Web 应用安全性的完整解决方案。
 
 正如你可能知道的关于安全方面的两个主要区域是“认证”和“授权”（或者访问控制），
-一般来说，Web 应用的安全性包括用户认证（Authentication）和用户授权（Authorization）两个部分，这两点也是 Spring Security 重要核心功能。
+一般来说，Web 应用的安全性包括**用户认证**（Authentication）和**用户授权**（Authorization）两个部分，这两点也是 Spring Security 重要核心功能。
 
 （1）用户认证指的是：验证某个用户是否为系统中的合法主体，也就是说用户能否访问该系统。用户认证一般要求用户提供用户名和密码。系统通过校验用户名和密码来完成认证过程。通俗点说就是系统认为用户是否能登录
 
@@ -24,8 +24,7 @@ Spring 是非常流行和成功的 Java 应用开发框架，Spring Security 正
     第二种方式：通过配置类
     ```java
        @Configuration
-       public class mySecurityConfig extends WebSecurityConfigurerAdapter {
-       
+       public class mySecurityConfig extends WebSecurityConfigurerAdapter {   
            @Override
            protected void configure(AuthenticationManagerBuilder auth) throws Exception {
                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -35,8 +34,7 @@ Spring 是非常流行和成功的 Java 应用开发框架，Spring Security 正
                        .password(password)
                        .roles("admin");
            }
-       
-       
+              
            @Bean
            PasswordEncoder password() {
                return new BCryptPasswordEncoder();
@@ -46,7 +44,7 @@ Spring 是非常流行和成功的 Java 应用开发框架，Spring Security 正
     
     第三种方式：自定义编写实现类
     
-    第一步 创建配置类，设置使用哪个 userDetailsService实现类
+    第一步 创建配置类，设置使用哪个 `userDetailsService` 实现类
     ```java
        @Configuration
        public class mySecurityConfigTest extends WebSecurityConfigurerAdapter {
@@ -80,7 +78,7 @@ Spring 是非常流行和成功的 Java 应用开发框架，Spring Security 正
     ```
 2. 查询数据库完成用户认证
 
-    *整合MybatisPlus完成数据库操作*
+    **整合 MybatisPlus 完成数据库操作**
     
     第一步：引入相关依赖
     ```xml
@@ -126,8 +124,7 @@ Spring 是非常流行和成功的 Java 应用开发框架，Spring Security 正
     第五步：制作登录实现类
     ```java
     @Service("userDetailsService")
-    public class MyUserDetailsService implements UserDetailsService {
-          
+    public class MyUserDetailsService implements UserDetailsService {   
         @Autowired
         private UsersMapper usersMapper;
     

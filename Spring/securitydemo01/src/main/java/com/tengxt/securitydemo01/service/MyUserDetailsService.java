@@ -34,7 +34,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
 
         List<GrantedAuthority> auths =
-                AuthorityUtils.commaSeparatedStringToAuthorityList("role");
+                AuthorityUtils.commaSeparatedStringToAuthorityList("admins,ROLE_sale,ROLE_admin");
         // 从查询数据库返回users对象，得到用户名和密码并返回
         return new User(users.getUsername(), new BCryptPasswordEncoder().encode(users.getPassword()), auths);
     }
