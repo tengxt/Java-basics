@@ -154,5 +154,82 @@ Spring 是非常流行和成功的 Java 应用开发框架，Spring Security 正
     @MapperScan("com.tengxt.securitydemo01.mapper")
     public class Securitydemo01Application {}
     ```
-    
+3. 认证授权注解使用
+    **`@Secured` 注解**：用户具有某个角色，可以访问方法
+    1. 在启动类（配置类）开启注解
+    ```java
+    @EnableGlobalMethodSecurity(securedEnabled = true)
+    public class Securitydemo01Application {}
+    ```
+    2. 在 controller 的方法上面使用注解，设置角色
+    ```java
+    @GetMapping("update")
+    @Secured({"ROLE_sale","ROLE_manager"})
+    public String update() {}
+    ```
+    3. 在 MyUserDetailsService 设置用户角色
+    ```java
+    AuthorityUtils.commaSeparatedStringToAuthorityList("admins,ROLE_sale,ROLE_admin");
+    ```
+    **`@PreAuthorize`注解**：方法之前进行校验
+    1. 在启动类（配置类）开启注解
+    ```java
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    public class Securitydemo01Application {}
+    ```
+    2. 在 controller 的方法上面使用注解，设置角色
+    ```java
+    @GetMapping("update")
+    @PreAuthorize("hasAnyAuthority('admins')")
+    public String update() {}
+    ```
+    **`@PostAuthorize`注解**：方法执行之后返回
+    1. 在启动类（配置类）开启注解
+    ```java
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    public class Securitydemo01Application {}
+    ```
+    2. 在 controller 的方法上面使用注解，设置角色
+    ```java
+    @GetMapping("update")
+    @PostAuthorize("hasAnyAuthority('admins')")
+    public String update() {}
+    ```
+    **`@PostFilter`注解**：方法返回数据进行过滤
+    **`@PreFilter`注解**：传入方法数据进行过滤
+4. 自动登录
+    Cookie 技术、安全框架机制实现自动登录
+    第一步 创建数据库表
+    ```sql
+    CREATE TABLE persistent_logins (
+    	username VARCHAR (64) NOT NULL,
+    	series VARCHAR (64) PRIMARY KEY,
+    	token VARCHAR (64) NOT NULL,
+    	last_used TIMESTAMP NOT NULL
+    )
+    ```
+    第二步 配置类，注入数据源，配置操作数据库对象
+    ```java
+    @Autowired
+    private DataSource dataSource; // 注入数据源
+    // 配置对象
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository(){
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        // 开启自动创建表 persistent_logins
+       // jdbcTokenRepository.setCreateTableOnStartup(true);
+        return jdbcTokenRepository;
+    }
+    ```
+    第三步 配置类配置自动登录
+    ```java
+    .and().rememberMe().tokenRepository(persistentTokenRepository())
+    .tokenValiditySeconds(60)   // 设置有效时长，单位秒
+    .userDetailsService(userDetailsService)
+    ```
+    第四步 登录页添加复选框 name 类型值必须是 remember-me 
+    ```html
+    记住我：<input type="checkbox" name="remember-me" title="记住密码"/>
+    ```
 #### 授权

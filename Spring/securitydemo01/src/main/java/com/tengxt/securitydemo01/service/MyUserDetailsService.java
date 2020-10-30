@@ -32,7 +32,6 @@ public class MyUserDetailsService implements UserDetailsService {
             // 数据库没有改用户，认证失败
             throw new UsernameNotFoundException("用户名不存在！");
         }
-
         List<GrantedAuthority> auths =
                 AuthorityUtils.commaSeparatedStringToAuthorityList("admins,ROLE_sale,ROLE_admin");
         // 从查询数据库返回users对象，得到用户名和密码并返回
