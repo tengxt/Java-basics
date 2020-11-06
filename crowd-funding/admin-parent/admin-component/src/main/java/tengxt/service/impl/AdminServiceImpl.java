@@ -102,6 +102,19 @@ public class AdminServiceImpl implements AdminService {
         return admin;
     }
 
+    @Override
+    public Admin getAdminByLoginAcct(String loginAcct) {
+        AdminExample example = new AdminExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andLoginAcctEqualTo(loginAcct);
+        List<Admin> adminList = adminMapper.selectByExample(example);
+        if (null == adminList || adminList.size() == 0) {
+            throw new RuntimeException(CrowdConstant.MESSAGE_STRING_INVALIDATE);
+        }
+        Admin admin = adminList.get(0);
+        return admin;
+    }
+
     /**
      * @param keyword  关键字
      * @param pageNum  当前页码

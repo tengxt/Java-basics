@@ -42,4 +42,9 @@ public class AuthServiceImpl implements AuthService {
             authMapper.insertNewRelationship(roleId,authIdList);
         }
     }
+
+    @Override
+    public List<String> getAuthNameByAdminId(Integer adminId) {
+        return authMapper.selectAuthNameByAdminId(adminId);
+    }
 }

@@ -17,4 +17,6 @@ public interface RoleService {
     List<Role> getAssignedRole(Integer adminId);
 
     List<Role> getUnAssignedRole(Integer adminId);
+
+    List<Role> queryAssignedRoleList(Integer adminId);
 }
