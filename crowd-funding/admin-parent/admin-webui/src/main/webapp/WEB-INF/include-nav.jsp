@@ -1,7 +1,7 @@
 <%--在被引入时显示乱码，就是用下面这句设置pageEncoding--%>
 <%@page pageEncoding="UTF-8"%>
 <%--引入security标签库--%>
-<%--<%@taglib prefix="security" uri="http://www.springframework.org/security/tags" %>--%>
+<%@taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -14,8 +14,8 @@
                         <button type="button" class="btn btn-default btn-success dropdown-toggle" data-toggle="dropdown">
                             <%-- 通过principal.originalAdmin.userName得到当前用户的昵称（principal其实就是前面返回的SecurityAdmin对象） --%>
                             <i class="glyphicon glyphicon-user">
-                                <%--<security:authentication property="principal.originalAdmin.userName"/>--%>
-                                    ${sessionScope.loginAdmin.userName}
+                                <security:authentication property="principal.originalAdmin.userName"/>
+                                    <%--${sessionScope.loginAdmin.userName}--%>
                             </i>
                             <span class="caret"></span>
                         </button>

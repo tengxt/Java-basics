@@ -9,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -185,7 +186,7 @@ public class AdminHandler {
     }
 
 
-
+    @PreAuthorize("hasAuthority('user:save')")
     @RequestMapping("/admin/page/doSave.html")
     public String doSave(Admin admin) {
         if (Objects.isNull(admin)) {
@@ -196,6 +197,7 @@ public class AdminHandler {
             throw new RuntimeException("创建数据失败，请联系管理员");
         }
         logger.info(saveAdmin > 0 ? "创建成功" : "创建失败");
+        // 重定向会原本的页面，且为了能在添加管理员后看到管理员，设置pageNum为整型的最大值（通过修正到最后一页）
         return "redirect:/admin/page/page.html?pageNum=" + Integer.MAX_VALUE;
     }
 }

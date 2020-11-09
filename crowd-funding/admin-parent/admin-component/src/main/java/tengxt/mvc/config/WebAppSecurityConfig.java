@@ -3,6 +3,7 @@ package tengxt.mvc.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity  // 开启web环境下的权限控制功能
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
     // 需要继承 WebSecurityConfigurerAdapter
 
@@ -37,6 +39,9 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()        // 表示对请求进行授权
                 .antMatchers(permitUrls)    // 传入的ant风格的url
                 .permitAll()                // 允许上面的所有请求，不需要认证
+
+                .antMatchers("/admin/page/page.html")	// 设置要得到admin的分页信息
+                .access("hasRole('经理') or hasAuthority('user:get')") // 必须具有经理的角色或有user:get的权限
 
                 .anyRequest()               // 设置其他未设置的全部请求
                 .authenticated()            // 表示需要认证

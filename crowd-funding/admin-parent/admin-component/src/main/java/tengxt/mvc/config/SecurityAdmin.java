@@ -21,6 +21,9 @@ public class SecurityAdmin extends User {
         // 将Admin对象放入对象
         this.originalAdmin = admin;
 
+        // 为了保证安全性，擦除放入originalAdmin的对象的密码
+        this.originalAdmin.setUserPswd(null);
+
     }
 
     public Admin getOriginalAdmin() {
