@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import tengxt.constant.CrowdConstant;
 import tengxt.entity.Admin;
@@ -27,6 +28,9 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private AdminMapper adminMapper;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Override
     public void saveAdminRoleRelationship(Integer adminId, List<Integer> roleIdList) {
         // 根据adminId删除旧的关联关系数据
@@ -42,7 +46,8 @@ public class AdminServiceImpl implements AdminService {
     public int saveAdmin(Admin admin) {
         // 密码加密
         String pswd = admin.getUserPswd();
-        pswd = CrowdUtil.md5(pswd);
+//        pswd = CrowdUtil.md5(pswd);
+        pswd = passwordEncoder.encode(pswd);
         admin.setUserPswd(pswd);
 
         // 生成创建时间

@@ -33,29 +33,30 @@ public class CrowdUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 通过用户名得到Admin对象
         Admin admin = adminService.getAdminByLoginAcct(username);
+        Integer adminId = admin.getId();
         // 通过AdminId得到角色List
-        List<Role> roles = roleService.getAssignedRole(admin.getId());
+        List<Role> roles = roleService.getAssignedRole(adminId);
         // 通过AdminId得到权限name地List
-        final List<String> authNameList = authService.getAuthNameByAdminId(admin.getId());
+        final List<String> authNameList = authService.getAuthNameByAdminId(adminId);
 
         // 创建List用来存放GrantedAuthority（权限信息）
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         // 向List存放角色信息，注意角色必须要手动加上 “ROLE_” 前缀
-        for (Role role : roles){
+        for (Role role : roles) {
             String roleName = "ROLE_" + role.getName();
             SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(roleName);
             authorities.add(simpleGrantedAuthority);
         }
 
         // 向List存放权限信息
-        for (String authName : authNameList){
+        for (String authName : authNameList) {
             SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authName);
             authorities.add(simpleGrantedAuthority);
         }
 
         // 将Admin对象、权限信息封装入SecurityAdmin对象（User的子类）
-        SecurityAdmin securityAdmin = new SecurityAdmin(admin,authorities);
+        SecurityAdmin securityAdmin = new SecurityAdmin(admin, authorities);
 
         // 返回SecurityAdmin对象
         return securityAdmin;

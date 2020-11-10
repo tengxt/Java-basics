@@ -35,20 +35,21 @@
     <mvc:view-controller path="/role/to/page.html" view-name="role-page"/>
     <mvc:view-controller path="/menu/to/page.html" view-name="menu-page"/>
 
+    <!--注册拦截器，使用SpringSecurity后当前自定义的登录拦截器不再使用了-->
     <!--在mvc容器中注册拦截器-->
-    <mvc:interceptors>
+    <!--<mvc:interceptors>
         <mvc:interceptor>
-            <!-- mapping 表示拦截的路径 -->
+            &lt;!&ndash; mapping 表示拦截的路径 &ndash;&gt;
             <mvc:mapping path="/**"/>
-            <!-- exclude-mapping表示例外（即不会被拦截器拦截） -->
+            &lt;!&ndash; exclude-mapping表示例外（即不会被拦截器拦截） &ndash;&gt;
             <mvc:exclude-mapping path="/admin/login/page.html"/>
             <mvc:exclude-mapping path="/admin/login/logout.html"/>
             <mvc:exclude-mapping path="/admin/login/doLogin.html"/>
             <mvc:exclude-mapping path="/admin/register.html"/>
             <mvc:exclude-mapping path="/admin/doRegister.json"/>
 
-            <!-- 配置拦截器的类 -->
+            &lt;!&ndash; 配置拦截器的类 &ndash;&gt;
             <bean class="tengxt.mvc.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
-    </mvc:interceptors>
+    </mvc:interceptors>-->
 </beans>

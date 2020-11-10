@@ -9,7 +9,7 @@ public interface AuthService {
 
     List<Auth> queryAuthList();
 
-    List<Integer> getAuthByRoleId(Integer roleId);
+        List<Integer> getAuthByRoleId(Integer roleId);
 
     void saveRoleAuthRelationship(Map<String, List<Integer>> map);
 
