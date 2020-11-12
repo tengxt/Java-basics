@@ -123,7 +123,7 @@ public class AdminHandler {
      * @param pageNum
      * @param keyword
      * @param session
-     * @return
+     * @returna'd
      */
     @RequestMapping("/admin/page/remove/{adminId}/{pageNum}/{keyword}.html")
     public String removeById(@PathVariable("adminId") Integer adminId,
