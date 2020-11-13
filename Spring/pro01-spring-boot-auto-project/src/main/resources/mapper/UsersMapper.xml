@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tengxt.pro01springbootautoproject.mapper.UsersMapper">
+    <select id="selectUsersAll" resultType="com.tengxt.pro01springbootautoproject.entity.Users">
+      SELECT * FROM users
+    </select>
+</mapper>
