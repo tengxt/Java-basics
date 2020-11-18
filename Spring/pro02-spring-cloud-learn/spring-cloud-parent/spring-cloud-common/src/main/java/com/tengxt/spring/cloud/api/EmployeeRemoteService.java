@@ -1,4 +1,4 @@
-package com.tengxt.spring.cloud.entity.com.tengxt.spring.cloud.api;
+package com.tengxt.spring.cloud.api;
 
 import com.tengxt.spring.cloud.entity.Employee;
 import org.springframework.cloud.openfeign.FeignClient;

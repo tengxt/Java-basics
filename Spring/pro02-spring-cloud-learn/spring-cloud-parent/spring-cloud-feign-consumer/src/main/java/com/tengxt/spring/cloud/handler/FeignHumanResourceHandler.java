@@ -1,7 +1,7 @@
 package com.tengxt.spring.cloud.handler;
 
 import com.tengxt.spring.cloud.entity.Employee;
-import com.tengxt.spring.cloud.entity.com.tengxt.spring.cloud.api.EmployeeRemoteService;
+import com.tengxt.spring.cloud.api.EmployeeRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
