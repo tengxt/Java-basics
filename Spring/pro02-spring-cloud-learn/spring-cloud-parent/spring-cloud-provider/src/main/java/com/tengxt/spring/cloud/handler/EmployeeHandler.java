@@ -1,6 +1,8 @@
 package com.tengxt.spring.cloud.handler;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tengxt.spring.cloud.entity.Employee;
+import com.tengxt.spring.cloud.util.ResultEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,22 @@ public class EmployeeHandler {
         empList.add(emp2);
         empList.add(emp3);
     }
+
+    // @HystrixCommand 注解指定当前方法出问题时调用的备用方法（使用fallbackMethod属性指定）
+    @HystrixCommand(fallbackMethod = "getEmpBreakerBackup")
+    @RequestMapping("/provider/get/emp/breaker")
+    public ResultEntity<Employee> getEmpBreaker(@RequestParam("signal") String signal) throws InterruptedException {
+        if ("bang-low".equals(signal)) {
+            Thread.sleep(5000);
+        }
+        return ResultEntity.successWithData(new Employee(666, "empName666", 666.666));
+    }
+
+    public ResultEntity<Employee> getEmpBreakerBackup(@RequestParam("signal") String signal) {
+        String message = "当调用getEmpBreaker()超时时,会执行断路方法" + signal;
+        return ResultEntity.faild(message);
+    }
+
 
     @RequestMapping("/provider/employee/remote")
     public Employee getEmployeeRemote() {

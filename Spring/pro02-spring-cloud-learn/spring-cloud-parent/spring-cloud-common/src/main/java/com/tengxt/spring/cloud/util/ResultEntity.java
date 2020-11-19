@@ -62,6 +62,12 @@ public class ResultEntity<T> {
         return new ResultEntity<E>(SUCCESS,NO_MESSAGE,data);
     }
 
+    /**
+     * 操作失败，返回错误消息
+     * @param message
+     * @param <E>
+     * @return
+     */
     public static <E> ResultEntity<E> faild(String message){
         return new ResultEntity<E>(FAILD,message,null);
     }

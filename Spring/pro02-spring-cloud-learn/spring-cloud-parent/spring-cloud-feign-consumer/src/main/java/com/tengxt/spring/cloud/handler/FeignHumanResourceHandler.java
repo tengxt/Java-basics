@@ -1,7 +1,8 @@
 package com.tengxt.spring.cloud.handler;
 
-import com.tengxt.spring.cloud.entity.Employee;
 import com.tengxt.spring.cloud.api.EmployeeRemoteService;
+import com.tengxt.spring.cloud.entity.Employee;
+import com.tengxt.spring.cloud.util.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,5 +25,10 @@ public class FeignHumanResourceHandler {
     @RequestMapping("/feign/consumer/get/empList")
     public List<Employee> getEmpListRemote(@RequestParam("keyword") String keyword) {
         return employeeRemoteService.getEmpListRemote(keyword);
+    }
+
+    @RequestMapping("/feign/consumer/test/fallback")
+    public ResultEntity<Employee> getEmpBreaker(@RequestParam("signal") String signal) {
+        return employeeRemoteService.getEmpBreaker(signal);
     }
 }

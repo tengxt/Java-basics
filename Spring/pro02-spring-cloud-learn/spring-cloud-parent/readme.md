@@ -103,3 +103,57 @@ spring.application.name=tengxt-provider
 # defaultZone 是一个魔术字符串后备值，为任何不表示首选项的客户端提供服务URL
 eureka.client.service-url.defaultZone=http://localhost:5000/eureka
 ```
+
+##### Hystrix Dashboard
+仪表盘
+
+**添加依赖**
+在项目 `spring-cloud-dashboard` 的 `pom.xml`中引入依赖
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+    </dependency>
+</dependencies>
+```
+
+**开启服务注册**
+```java
+@EnableHystrixDashboard     //  启用仪表盘监控功能
+@SpringBootApplication
+public class SpringBootMainClass {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootMainClass.class, args);
+    }
+}
+```
+
+**添加配置**
+```properties
+server.port=8000
+
+spring.application.name=tengxt-dashboard
+```
+
+启动应用，在浏览器中输入 `http://localhost:8000/hystrix`
+
+单体应用的监控：通过 `URL:http://applicationName:port/actuator/hystrix.stream` 开启，实现对具体某个服务实例的监控。
+
+例如：对 provider 服务监控
+
+在`spring-cloud-provider`项目的 `pom.xml`中添加依赖
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+``` 
+添加配置
+```properties
+management.endpoints.web.exposure.include=hystrix.stream
+server.port=2000
+``` 
+在 `http://localhost:8000/hystrix` 的页面中输入 `http://localhost:2000/actuator/hystrix.stream` 查看监控信息
+
+

@@ -13,6 +13,8 @@
         <module>spring-cloud-common</module>
         <module>spring-cloud-eureka</module>
         <module>spring-cloud-feign-consumer</module>
+        <module>spring-cloud-dashboard</module>
+        <module>spring-cloud-zuul</module>
     </modules>
     <packaging>pom</packaging>
 
