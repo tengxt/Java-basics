@@ -104,6 +104,133 @@ spring.application.name=tengxt-provider
 eureka.client.service-url.defaultZone=http://localhost:5000/eureka
 ```
 
+##### Hystrix
+服务熔断、降级
+
+一个用于处理分布式系统的延迟和容错的开源库，hystrix可以保证在一个依赖出现问题的情况下，不会导致整体服务失败，避免级联故障，以提高分布式系统的弹性。
+“断路器”本身是一种开关装置，当某个服务单元发生故障时，通过断路器的故障监控（类似与熔断丝），向调用方返回一个预期的可处理的备选响应，而不是长时间的等待或抛出无法处理的异常，这样就可以保证调用方不会长时间的、不必要的占用，从而避免故障在分布式系统中的蔓延乃至雪崩。
+
+Hystrix的工作原理：
+
+- 防止任何单个依赖项耗尽所有容器（例如Tomcat）用户线程
+- 减少负载并快速失败，而不是排队
+- 在可行的情况下提供备用，以保护用户免受故障的影响
+- 使用隔离技术（例如隔板，泳道和断路器模式）来限制任何一种依赖关系的影响
+- 通过近实时指标，监视和警报优化发现时间
+- 通过在Hystrix的大多数方面中以低延迟传播配置更改来优化恢复时间，并支持动态属性更改，这使您可以通过低延迟反馈回路进行实时操作修改。
+- 防止整个依赖客户端执行失败，而不仅仅是网络通信失败
+
+###### 服务熔断
+对微服务雪崩效应的一种链路保护机制，当扇出链路中微服务响应时间过长或不可用时，会进行服务的降级，进而熔断该服务节点的调用，快速返回错误的响应信息，
+当检测到该链路访问正常时恢复该链路的正常调用。spring cloud中hystrix会监控微服务的调用，当失败调用达到一定的阈值，默认为5秒20次失败调用就会启动熔断机制，熔断机制的注解为`@HystrixCommand`唯一的注解
+
+**添加依赖**
+在项目 `spring-cloud-provider` 的 `pom.xml`中引入依赖
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+</dependency>
+```
+
+**熔断器配置**
+```java
+// @HystrixCommand 注解指定当前方法出问题时调用的备用方法（使用fallbackMethod属性指定）
+    @HystrixCommand(fallbackMethod = "getEmpBreakerBackup")
+    @RequestMapping("/provider/get/emp/breaker")
+    public ResultEntity<Employee> getEmpBreaker(@RequestParam("signal") String signal) throws InterruptedException {
+        // 当请求参数 signal=bang-low，线程休眠；触发熔断机制 
+        if ("bang-low".equals(signal)) {
+            Thread.sleep(5000);
+        }
+        return ResultEntity.successWithData(new Employee(666, "empName666", 666.666));
+    }
+    
+    public ResultEntity<Employee> getEmpBreakerBackup(@RequestParam("signal") String signal) {
+        String message = "当调用getEmpBreaker()超时时,会执行断路方法" + signal;
+        return ResultEntity.faild(message);
+    }
+```
+
+**启动类开启熔断机制**
+```java
+// 使用 @EnableCircuitBreaker 注解开启断路器功能
+@EnableCircuitBreaker
+@SpringBootApplication
+public class SpringBootMainClass {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootMainClass.class, args);
+    }
+}
+```
+
+###### 服务降级
+服务的降级处理是在消费（consumer）实现的
+
+在项目 `spring-cloud-common` 中编写服务降级类
+```java
+/**
+ * 实现 consumer 端服务降级
+ * 实现 FallbackFactory 接口时要传入 @FeignClient 注解标记的接口类型
+ * 在 create() 方法中返回 @FeignClient 注解标记的j接口类型的对象，当 provider 调用失败后，会执行这个对象的方法
+ * 这个类必须使用 @Component 注解将当前类的对象加入IOC容器，当前类必须能够被扫描到
+ */
+@Component
+public class MyFallBackFactory implements FallbackFactory<EmployeeRemoteService> {
+
+    @Override
+    public EmployeeRemoteService create(Throwable throwable) {
+        return new EmployeeRemoteService() {
+            @Override
+            public Employee getEmployeeRemote() {
+                return null;
+            }
+
+            @Override
+            public List<Employee> getEmpListRemote(String keyword) {
+                return null;
+            }
+
+            @Override
+            public ResultEntity<Employee> getEmpBreaker(String signal) {
+                return ResultEntity.faild(throwable.getMessage() + "使用 FallbackFactory 服务降级");
+            }
+        };
+    }
+}
+```
+
+关联客户端接口
+```java
+// 表示当前接口和一个 provider 对应, value 属性指定要调用的 provider 的微服务名称
+// fallbackFactory 属性指定 provider 不可用时提供备用方案的工厂类型
+@FeignClient(value = "tengxt-provider", fallbackFactory = MyFallBackFactory.class)
+public interface EmployeeRemoteService {
+
+    /**
+     * 远程调用的接口方法
+     * 要求 @RequestMapping 注解映射的地址一致
+     * 要求方法声明一致
+     * 用来获取请求参数 @RequestParam、@PathVariable、@RequestBody 不能省略，两边一致
+     * @return
+     */
+    @RequestMapping("/provider/employee/remote")
+    Employee getEmployeeRemote();
+
+    @RequestMapping("/provider/employee/list/remote")
+    List<Employee> getEmpListRemote(@RequestParam("keyword") String keyword);
+
+    @RequestMapping("/provider/get/emp/breaker")
+    ResultEntity<Employee> getEmpBreaker(@RequestParam("signal") String signal);
+}
+```
+
+在配置文件中开启服务降级
+```properties
+# 开启服务降级
+feign.hystrix.enabled=true
+```
+
 ##### Hystrix Dashboard
 仪表盘
 
@@ -155,5 +282,39 @@ management.endpoints.web.exposure.include=hystrix.stream
 server.port=2000
 ``` 
 在 `http://localhost:8000/hystrix` 的页面中输入 `http://localhost:2000/actuator/hystrix.stream` 查看监控信息
+
+##### Zuul
+在项目 `spring-cloud-zuul` 的 `pom.xml`中引入依赖
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+</dependency>
+```
+
+启用 Zuul 的网关代理
+```java
+@EnableZuulProxy        // 启用 Zuul 的网关代理功能
+@SpringBootApplication
+public class SpringBootMainClass {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootMainClass.class, args);
+    }
+}
+```
+
+添加配置
+```properties
+zuul.ignored-services='*'
+# zuul 的访问前缀
+zuul.prefix=/tengxt
+# 配置路由的目标服务名
+zuul.routes.employee.serviceId=tengxt-feign-consumer
+# 匹配的路由规则
+zuul.routes.employee.path=/zuul-emp/**
+```
+
+
+
 
 

@@ -32,7 +32,7 @@ public class MyFallBackFactory implements FallbackFactory<EmployeeRemoteService>
 
             @Override
             public ResultEntity<Employee> getEmpBreaker(String signal) {
-                return ResultEntity.faild(throwable.getMessage());
+                return ResultEntity.faild(throwable.getMessage() + "使用 FallbackFactory 服务降级");
             }
         };
     }

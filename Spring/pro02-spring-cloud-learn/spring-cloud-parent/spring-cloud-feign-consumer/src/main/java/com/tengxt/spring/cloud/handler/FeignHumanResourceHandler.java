@@ -27,7 +27,7 @@ public class FeignHumanResourceHandler {
         return employeeRemoteService.getEmpListRemote(keyword);
     }
 
-    @RequestMapping("/feign/consumer/test/fallback")
+    @RequestMapping("/feign/consumer/get/emp/breaker")
     public ResultEntity<Employee> getEmpBreaker(@RequestParam("signal") String signal) {
         return employeeRemoteService.getEmpBreaker(signal);
     }
