@@ -6,8 +6,8 @@ package tengxt.util;
  */
 public class ResultEntity<T> {
 
-    private static final String SUCCESS = "SUCCESS";
-    private static final String FAILED = "FAILED";
+    public static final String SUCCESS = "SUCCESS";
+    public static final String FAILED = "FAILED";
 
     // 结果（成功/失败）
     private String result;
