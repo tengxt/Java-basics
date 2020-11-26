@@ -43,18 +43,14 @@ public class AccessPassResources {
      * @return true: 表示该资源是静态资源; false: 表示该资源不是静态资源
      */
     public static boolean judgeIsStaticResource(String servletPath) {
-
         // 先判断字符串是否为空
         if (servletPath == null || servletPath.length() == 0) {
             throw new RuntimeException(CrowdConstant.MESSAGE_STRING_INVALIDATE);
         }
-
         // 通过“/”来分割得到的请求路径
         String[] split = servletPath.split("/");
-
         // split[0]是一个空字符串，因此取split[1]，相当于/aaa/bbb/ccc的“aaa”
         String path = split[1];
-
         // 判断是否包含得到的请求的第一个部分
         return STATIC_RES_SET.contains(path);
     }
