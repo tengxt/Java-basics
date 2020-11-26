@@ -109,7 +109,7 @@ public class MemberHandler {
         session.setAttribute(CrowdConstant.ATTR_NAME_LOGIN_MEMBER, loginMember);
 
         // 重定向到登陆成功后的主页面
-        return "redirect:/auth/to/member/center/page.html";
+        return "redirect:http://localhost/auth/to/member/center/page.html";
     }
 
     /**
@@ -183,7 +183,7 @@ public class MemberHandler {
         }
 
         // 全部判断成功，跳转到登录页面
-        return "redirect:/auth/to/member/login/page.html";
+        return "redirect:http://localhost/auth/to/member/login/page.html";
     }
 
 
