@@ -15,6 +15,7 @@ import tengxt.constant.CrowdConstant;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -31,6 +32,7 @@ public class ProjectHandler {
             List<MultipartFile> detailPictureList,
             HttpServletRequest request,
             ModelMap modelMap) {
+        // 一、完成头图图片的上传
         // 判断headerPicture对象是否为空
         boolean headerPictureEmpty = headerPicture.isEmpty();
         if (headerPictureEmpty) {
@@ -44,8 +46,46 @@ public class ProjectHandler {
             // 上传失败
             modelMap.addAttribute(CrowdConstant.ATTR_NAME_MESSAGE, CrowdConstant.MESSAGE_HEADER_PIC_UPLOAD_FAILED);
             return "project-launch";
+        } else {
+            // 存入ProjectVO对象
+            projectVO.setHeaderPicturePath(singleFile);
         }
-        return null;
+        // 二、完成详情图片的上传
+        // 创建用于存放详情图片的路径的List对象
+        List<String> detailPicturePathList = new ArrayList<>();
+        // 判断详情图片是否为空
+        if (detailPictureList == null || detailPictureList.size() == 0) {
+            // 详情图片为空，加入提示信息，返回原本页面
+            modelMap.addAttribute(CrowdConstant.ATTR_NAME_MESSAGE, CrowdConstant.MESSAGE_DETAIL_PIC_EMPTY);
+            return "project-launch";
+        }
+        // 详情图片不为空 遍历List
+        for (MultipartFile detailPicture : detailPictureList) {
+            // 判断当前MultipartFile是否有效
+            if (detailPicture.isEmpty()) {
+                // 当前图片为空，也返回原本的页面
+                modelMap.addAttribute(CrowdConstant.ATTR_NAME_MESSAGE, CrowdConstant.MESSAGE_DETAIL_PIC_EMPTY);
+                return "project-launch";
+            }
+            // 不为空，开始存放详情图片
+            String detailPictureFile = fileUploadBySingle(detailPicture, request);
+            if (StringUtils.isEmpty(detailPictureFile)) {
+                // 上传失败
+                modelMap.addAttribute(CrowdConstant.ATTR_NAME_MESSAGE, CrowdConstant.MESSAGE_HEADER_PIC_UPLOAD_FAILED);
+                return "project-launch";
+            }
+            // 存入ProjectVO对象
+            detailPicturePathList.add(detailPictureFile);
+        }
+        // 将detailPicturePathList存入ProjectVO对象
+        projectVO.setDetailPicturePathList(detailPicturePathList);
+
+        // 后续操作
+        // 将ProjectVO对象放入session域
+        request.getSession().setAttribute(CrowdConstant.ATTR_NAME_TEMPLE_PROJECT, projectVO);
+
+        // 进入下一个收集回报信息的页面
+        return "redirect:http://localhost/project/return/info/page.html";
     }
 
 
@@ -56,7 +96,7 @@ public class ProjectHandler {
      * @return
      */
     public String fileUploadBySingle(MultipartFile file, HttpServletRequest request) {
-        // 上传文件保存的本地目录  E:\tengyantao\gitRepository\uploadFile
+        // 上传文件保存的本地目录
         String uploadFileLocation = uploadFileConfig.getLocation();
         // //请求 url 中的资源映射  /uploadFile/**
         String resourceHandler = uploadFileConfig.getResourceHandler();
@@ -66,7 +106,6 @@ public class ProjectHandler {
         }
         // basePath拼接完成后，形如：http://127.0.0.1:9005/fileServer
         String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-        logger.info("basePath >>>>> " + basePath);
         String fileName = file.getOriginalFilename();
         // 如果是获取的含有路径的文件名，那么截取掉多余的，只剩下文件名和后缀名
         int index = fileName.lastIndexOf("\\");
@@ -91,7 +130,6 @@ public class ProjectHandler {
             fileName = fileName + (int) (Math.random() * 100000);
         }
         String fileServerPath = basePath + resourceHandler.substring(0, resourceHandler.lastIndexOf("/") + 1) + fileName;
-        logger.info("文件访问路径：" + fileServerPath);
 
         File dest = new File(uploadFileLocation, fileName);
         // 如果该文件的上级文件夹不存在，则创建该文件的上级文件夹及其祖辈级文件夹;
@@ -104,12 +142,12 @@ public class ProjectHandler {
         try {
             // 将获取到的附件file,transferTo写入到指定的位置(即:创建dest时，指定的路径)
             file.transferTo(dest);
+            logger.info("文件的全路径 >>>>>>> " + dest.getPath().toString() + " >>>>>>> 上传成功...");
         } catch (IllegalStateException e) {
             logger.error("fileUploadBySingle >>>>" + e.getMessage());
         } catch (IOException e) {
             logger.error("fileUploadBySingle >>>>" + e.getMessage());
         }
-        logger.debug("文件的全路径名字(含路径、后缀)>>>>>>>" + dest.getPath().toString() + "上传成功...");
         return dest.getPath().toString();
     }
 }
