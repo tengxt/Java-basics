@@ -1,7 +1,11 @@
 package com.tengxt.crowd.handler;
 
+import com.tengxt.crowd.MySQLRemoteService;
 import com.tengxt.crowd.config.UploadFileConfig;
+import com.tengxt.crowd.entity.vo.LoginMemberVO;
+import com.tengxt.crowd.entity.vo.MemberConfirmInfoVO;
 import com.tengxt.crowd.entity.vo.ProjectVO;
+import com.tengxt.crowd.entity.vo.ReturnVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import tengxt.constant.CrowdConstant;
+import tengxt.util.ResultEntity;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +32,9 @@ public class ProjectHandler {
 
     @Autowired
     private UploadFileConfig uploadFileConfig;
+
+    @Autowired
+    private MySQLRemoteService mySQLRemoteService;
 
     @RequestMapping("/create/project/information")
     public String createProInformation(
@@ -71,7 +82,7 @@ public class ProjectHandler {
             String detailPictureFile = fileUploadBySingle(detailPicture, request);
             if (StringUtils.isEmpty(detailPictureFile)) {
                 // 上传失败
-                modelMap.addAttribute(CrowdConstant.ATTR_NAME_MESSAGE, CrowdConstant.MESSAGE_HEADER_PIC_UPLOAD_FAILED);
+                modelMap.addAttribute(CrowdConstant.ATTR_NAME_MESSAGE, CrowdConstant.MESSAGE_DETAIL_PIC_UPLOAD_FAILED);
                 return "project-launch";
             }
             // 存入ProjectVO对象
@@ -86,6 +97,100 @@ public class ProjectHandler {
 
         // 进入下一个收集回报信息的页面
         return "redirect:http://localhost/project/return/info/page.html";
+    }
+
+    // 回报页面上传图片时触发的ajax请求对应的handler方法
+    @ResponseBody
+    @RequestMapping("/create/upload/return/picture.json")
+    public ResultEntity<String> uploadReturnPicture(@RequestParam("returnPicture") MultipartFile returnPicture, HttpServletRequest request) throws IOException {
+        // 判断是否是有效上传
+        boolean pictureIsEmpty = returnPicture.isEmpty();
+        if (pictureIsEmpty) {
+            // 如果上传文件为空
+            return ResultEntity.failed(CrowdConstant.MESSAGE_RETURN_PIC_EMPTY);
+        }
+
+        String singleFile = fileUploadBySingle(returnPicture, request);
+        if (StringUtils.isEmpty(singleFile)) {
+            // 上传失败
+            return ResultEntity.failed(CrowdConstant.MESSAGE_RETURN_PIC_EMPTY_FAILED);
+        }
+
+        // 返回上传结果
+        return ResultEntity.successWithData(singleFile);
+    }
+
+    // 回报页面保存回报信息的ajax请求对应的方法
+    @ResponseBody
+    @RequestMapping("/create/save/return.json")
+    public ResultEntity<String> saveReturn(ReturnVO returnVO, HttpSession session) {
+        try {
+            // 从session域取出ProjectVO对象
+            ProjectVO projectVO = (ProjectVO) session.getAttribute(CrowdConstant.ATTR_NAME_TEMPLE_PROJECT);
+
+            // 判断ProjectVO是否回null
+            if (projectVO == null) {
+                return ResultEntity.failed(CrowdConstant.MESSAGE_TEMPLE_PROJECT_MISSING);
+            }
+
+            // ProjectVO不为null
+            // 取出projectVO中的returnVOList
+            List<ReturnVO> returnVOList = projectVO.getReturnVOList();
+
+            // 判断取出的list是否为空或长度为0
+            if (returnVOList == null || returnVOList.size() == 0) {
+                // 初始化returnVOList
+                returnVOList = new ArrayList<>();
+                // 存入projectVO
+                projectVO.setReturnVOList(returnVOList);
+            }
+            // 向returnVOList中存放当前接收的returnVO
+            returnVOList.add(returnVO);
+
+            // 重新将ProjectVO存入session域
+            session.setAttribute(CrowdConstant.ATTR_NAME_TEMPLE_PROJECT, projectVO);
+
+            // 全部操作正常完成，返回成功的ResultEntity
+            return ResultEntity.successWithoutData();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 出现异常返回failed，带上异常信息
+            return ResultEntity.failed(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/create/confirm.html")
+    public String saveConfirm(MemberConfirmInfoVO memberConfirmInfoVO, HttpSession session, ModelMap modelMap) {
+        // 从session域取出ProjectVO对象
+        ProjectVO projectVO = (ProjectVO) session.getAttribute(CrowdConstant.ATTR_NAME_TEMPLE_PROJECT);
+
+        // 判断ProjectVO是否回null
+        if (projectVO == null) {
+            // 这里不多做处理了，就直接抛出异常
+            throw new RuntimeException(CrowdConstant.MESSAGE_TEMPLE_PROJECT_MISSING);
+        }
+        // ProjectVO正常，开始向其中存放MemberConfirmInfo
+        projectVO.setMemberConfirmInfoVO(memberConfirmInfoVO);
+
+        // 从session域中读取当前登录的用户
+        LoginMemberVO loginMember = (LoginMemberVO) session.getAttribute(CrowdConstant.ATTR_NAME_LOGIN_MEMBER);
+        Integer memberId = loginMember.getId();
+
+        // 调用远程方法保存ProjectVO对象和当前登录的用户的id
+        ResultEntity<String> saveResultEntity = mySQLRemoteService.saveProjectRemote(projectVO, memberId);
+        String result = saveResultEntity.getResult();
+        if (ResultEntity.FAILED.equals(result)) {
+            // 保存出错，返回确认的界面，并且携带错误的消息
+            modelMap.addAttribute(CrowdConstant.ATTR_NAME_MESSAGE, saveResultEntity.getMessage());
+            return "project-confirm";
+        }
+
+        // 保存正常完成，删除session中临时存放的ProjectVO
+        session.removeAttribute(CrowdConstant.ATTR_NAME_TEMPLE_PROJECT);
+
+        // 进入成功页面
+        return "redirect:http://localhost/project/create/success.html";
     }
 
 

@@ -20,4 +20,7 @@ public interface ProjectItemPicPOMapper {
     int updateByExampleSelective(@Param("record") ProjectItemPicPO record, @Param("example") ProjectItemPicPOExample example);
 
     int updateByExample(@Param("record") ProjectItemPicPO record, @Param("example") ProjectItemPicPOExample example);
+
+    void insertPathList(@Param("projectId") Integer projectId,
+                        @Param("detailPicturePathList") List<String> detailPicturePathList);
 }

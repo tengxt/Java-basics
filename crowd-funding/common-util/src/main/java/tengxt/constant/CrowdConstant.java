@@ -27,6 +27,7 @@ public class CrowdConstant {
     public static final String MESSAGE_DETAIL_PIC_UPLOAD_FAILED = "详情图片上传失败，请重试！";
     public static final String ATTR_NAME_TEMPLE_PROJECT = "templeProject";
     public static final String MESSAGE_RETURN_PIC_EMPTY = "上传回报图片不能为空！";
+    public static final String MESSAGE_RETURN_PIC_EMPTY_FAILED = "上传回报图片上传失败，请重试！";
     public static final String MESSAGE_TEMPLE_PROJECT_MISSING = "临时ProjectVO对象未找到！";
     public static final String ATTR_NAME_PORTAL_TYPE_LIST = "portal_type_list";
     public static final String ATTR_NAME_DETAIL_PROJECT = "detailProjectVO";

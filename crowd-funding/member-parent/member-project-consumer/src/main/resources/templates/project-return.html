@@ -255,8 +255,8 @@
                                             <div class="col-md-12 column">
                                                 <form class="form-horizontal">
                                                     <div class="form-group">
-                                                        <label for="inputEmail3"
-                                                               class="col-sm-2 control-label">回报类型</label>
+                                                        <label
+                                                                class="col-sm-2 control-label">回报类型</label>
                                                         <div class="col-sm-10">
                                                             <label class="radio-inline"> <input type="radio"
                                                                                                 name="type"
@@ -306,16 +306,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="inputEmail3"
-                                                               class="col-sm-2 control-label">单笔限购</label>
+                                                        <label
+                                                                class="col-sm-2 control-label">单笔限购</label>
                                                         <div class="col-sm-10">
                                                             <label class="radio-inline"> <input type="radio"
                                                                                                 name="signalpurchase"
-                                                                                                id="inlineRadio1"
                                                                                                 value="0"> 不限购
                                                             </label> <label class="radio-inline"> <input
-                                                                type="radio" name="signalpurchase"
-                                                                id="inlineRadio2" value="1"> 限购
+                                                                type="radio" name="signalpurchase" value="1"> 限购
                                                         </label> <input type="text" name="purchase" value="8"
                                                                         class="form-control"
                                                                         style="width: 100px; display: inline"> <label
@@ -332,23 +330,19 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="inputEmail3"
-                                                               class="col-sm-2 control-label">发票</label>
+                                                        <label class="col-sm-2 control-label">发票</label>
                                                         <div class="col-sm-10">
-                                                            <label class="radio-inline"> <input type="radio"
-                                                                                                name="invoice"
-                                                                                                id="inlineRadio1"
-                                                                                                value="0"> 不可开发票
-                                                            </label> <label class="radio-inline"> <input
-                                                                type="radio" name="invoice"
-                                                                id="inlineRadio2" value="1">
-                                                            可开发票（包括个人发票和自定义抬头发票）
-                                                        </label>
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="invoice" value="0"> 不可开发票
+                                                            </label>
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="invoice" value="1">
+                                                                可开发票（包括个人发票和自定义抬头发票）
+                                                            </label>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="inputEmail3"
-                                                               class="col-sm-2 control-label">回报时间</label>
+                                                        <label class="col-sm-2 control-label">回报时间</label>
                                                         <div class="col-sm-10">
                                                             <label class="radio-inline"> 项目结束后 </label> <input
                                                                 type="text" name="returndate" value="15"
@@ -358,7 +352,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="inputEmail3" class="col-sm-2 control-label"></label>
+                                                        <label class="col-sm-2 control-label"></label>
                                                         <div class="col-sm-10">
                                                             <button type="button" class="btn btn-primary" id="okBtn">
                                                                 确定
@@ -383,7 +377,8 @@
                                                     <i class="glyphicon glyphicon-info-sign"
                                                        style="color: #2a6496;"></i> 提示
                                                 </p>
-                                                <small>3个以上的回报：多些选择能提高项目的支持率。几十、几百、上千元的支持：3个不同档次的回报，能让你的项目更快成功。回报最好是项目的衍生品：<br>与项目内容有关的回报更能吸引到大家的支持。
+                                                <small>
+                                                    3个以上的回报：多些选择能提高项目的支持率。几十、几百、上千元的支持：3个不同档次的回报，能让你的项目更快成功。回报最好是项目的衍生品：<br>与项目内容有关的回报更能吸引到大家的支持。
                                                 </small>
                                             </blockquote>
                                         </div>
@@ -446,13 +441,10 @@
     });
 
     $(function () {
-
         // 回报信息的表单部分默认隐藏
         $(".returnFormDiv").hide();
-
         // 点击添加回报按钮切换表单部分的显示状态
         $("#addReturnBtn").click(function () {
-
             // toggle()把显示的元素隐藏，把隐藏的元素显示
             $(".returnFormDiv").toggle();
         });

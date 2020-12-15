@@ -20,4 +20,6 @@ public interface ReturnPOMapper {
     int updateByExampleSelective(@Param("record") ReturnPO record, @Param("example") ReturnPOExample example);
 
     int updateByExample(@Param("record") ReturnPO record, @Param("example") ReturnPOExample example);
+
+    void insertReturnPOList(@Param("projectId") Integer projectId, @Param("returnPOList") List<ReturnPO> returnPOList);
 }
