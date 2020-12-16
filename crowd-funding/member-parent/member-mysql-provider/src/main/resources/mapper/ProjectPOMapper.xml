@@ -102,6 +102,7 @@
     <id column="id" property="id"/>
     <result column="name" property="name"/>
     <result column="remark" property="remark"/>
+    <!-- 通过typeId查询对应项目信息的list -->
     <collection property="portalProjectVOList" column="id" select="selectPortalProjectVOList"/>
   </resultMap>
 

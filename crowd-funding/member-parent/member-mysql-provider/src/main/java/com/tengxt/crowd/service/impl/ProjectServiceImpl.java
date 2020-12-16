@@ -4,10 +4,7 @@ import com.tengxt.crowd.entity.po.MemberConfirmInfoPO;
 import com.tengxt.crowd.entity.po.MemberLaunchInfoPO;
 import com.tengxt.crowd.entity.po.ProjectPO;
 import com.tengxt.crowd.entity.po.ReturnPO;
-import com.tengxt.crowd.entity.vo.MemberConfirmInfoVO;
-import com.tengxt.crowd.entity.vo.MemberLauchInfoVO;
-import com.tengxt.crowd.entity.vo.ProjectVO;
-import com.tengxt.crowd.entity.vo.ReturnVO;
+import com.tengxt.crowd.entity.vo.*;
 import com.tengxt.crowd.mapper.*;
 import com.tengxt.crowd.service.api.ProjectService;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +36,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private MemberConfirmInfoPOMapper memberConfirmInfoPOMapper;
+
+
+    @Override
+    public List<PortalTypeVO> getPortalTypeVOList() {
+        return projectPOMapper.selectPortalTypeVOList();
+    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void saveProject(ProjectVO projectVO, Integer memberId) {
