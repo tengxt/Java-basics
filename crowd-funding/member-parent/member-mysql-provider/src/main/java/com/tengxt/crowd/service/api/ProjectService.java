@@ -1,5 +1,6 @@
 package com.tengxt.crowd.service.api;
 
+import com.tengxt.crowd.entity.vo.DetailProjectVO;
 import com.tengxt.crowd.entity.vo.PortalTypeVO;
 import com.tengxt.crowd.entity.vo.ProjectVO;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,4 +13,6 @@ public interface ProjectService {
     void saveProject(@RequestBody ProjectVO projectVO, @RequestParam Integer memberId);
 
     List<PortalTypeVO> getPortalTypeVOList();
+
+    DetailProjectVO getDetailProjectVO(Integer projectId);
 }

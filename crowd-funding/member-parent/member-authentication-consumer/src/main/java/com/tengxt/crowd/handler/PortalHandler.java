@@ -29,7 +29,6 @@ public class PortalHandler {
             List<PortalTypeVO> portalTypeVOList = resultEntity.getData();
             modelMap.addAttribute(CrowdConstant.ATTR_NAME_PORTAL_TYPE_LIST, portalTypeVOList);
         }
-
         return "portal";
     }
 

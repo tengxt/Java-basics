@@ -102,8 +102,15 @@
     <id column="id" property="id"/>
     <result column="name" property="name"/>
     <result column="remark" property="remark"/>
-    <!-- 通过typeId查询对应项目信息的list -->
-    <collection property="portalProjectVOList" column="id" select="selectPortalProjectVOList"/>
+    <!-- 分类数据中包含的项目数据的List -->
+    <!--property属性： 对应PortalTypeVO中分类数据的项目数据的List属性 -->
+    <!--column属性： 查询项目时需要用的分类id，通过column属性值传入-->
+    <!--ofType属性： 项目数据的实体类型portalProjectVO-->
+    <collection
+            property="portalProjectVOList"
+            column="id"
+            ofType="com.tengxt.crowd.entity.vo.PortalProjectVO"
+            select="selectPortalProjectVOList"/>
   </resultMap>
 
   <!-- selectPortalTypeVOList -->
@@ -133,14 +140,13 @@
     supportmoney supportMoney,
     signalpurchase signalPurchase,
     purchase,
-    freight ,
+    freight,
     returndate returnDate,
     content
     from
     t_return
     where
     projectid=#{id}
-
   </select>
 
   <select id="selectDetailPicturePathList" resultType="string">

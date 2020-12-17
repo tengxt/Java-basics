@@ -1,13 +1,11 @@
 package com.tengxt.crowd.handler;
 
+import com.tengxt.crowd.entity.vo.DetailProjectVO;
 import com.tengxt.crowd.entity.vo.PortalTypeVO;
 import com.tengxt.crowd.entity.vo.ProjectVO;
 import com.tengxt.crowd.service.api.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tengxt.util.ResultEntity;
 
 import java.util.List;
@@ -41,6 +39,13 @@ public class ProjectProviderHandler {
             e.printStackTrace();
             return ResultEntity.failed(e.getMessage());
         }
+    }
+
+    // 传入的 /{projectId} 需要在传参处使用 @PathVariable("projectId")来接收
+    @RequestMapping("/get/detail/project/remote/{projectId}")
+    public ResultEntity<DetailProjectVO> getDetailProjectVORemote(
+            @PathVariable("projectId") Integer projectId) {
+        return ResultEntity.successWithData(projectService.getDetailProjectVO(projectId));
     }
 
 }

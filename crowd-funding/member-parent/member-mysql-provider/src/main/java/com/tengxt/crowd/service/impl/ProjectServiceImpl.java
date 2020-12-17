@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +39,57 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private MemberConfirmInfoPOMapper memberConfirmInfoPOMapper;
 
+    @Override
+    public DetailProjectVO getDetailProjectVO(Integer projectId) {
+        // 得到DetailProjectVO对象
+        DetailProjectVO detailProjectVO = projectPOMapper.selectDetailProjectVO(projectId);
+        // 根据status 确定status的状态
+        Integer status = detailProjectVO.getStatus();
+        switch (status) {
+            case 0:
+                detailProjectVO.setStatusText("即将开始");
+                break;
+            case 1:
+                detailProjectVO.setStatusText("众筹中");
+                break;
+            case 2:
+                detailProjectVO.setStatusText("众筹成功");
+                break;
+            case 3:
+                detailProjectVO.setStatusText("众筹失败");
+                break;
+            default:
+                break;
+        }
+
+        // 根据deployDate计算lastDay
+        String deployDate = detailProjectVO.getDeployDate();
+        if (StringUtils.isEmpty(deployDate)) {
+            // deployDate 为空，默认时间
+            deployDate = "2020-12-01";
+        }
+        // 获取当前日期
+        Date currentDay = new Date();
+        // 把众筹的日期转换为Date类型
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date deployDay = format.parse(deployDate);
+            // 获取当前日期的时间戳
+            long currentDayTime = currentDay.getTime();
+            // 获取众筹日期的时间戳
+            long deployDayTime = deployDay.getTime();
+            // 通过当前日期时间戳-众筹日期时间戳，得到已经去过的时间
+            Integer passDay = (int) (currentDayTime - deployDayTime) / 1000 / 60 / 60 / 24;
+            // 用设置的众筹天数-过去的时间 得到剩余时间
+            int lastDay = detailProjectVO.getDay() - passDay;
+            // 给当前的DetailProjectVO对象设置剩余时间
+            detailProjectVO.setLastDay(lastDay);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        // 最后返回完善后的detailProjectVO对象
+        return detailProjectVO;
+    }
 
     @Override
     public List<PortalTypeVO> getPortalTypeVOList() {

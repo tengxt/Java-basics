@@ -178,8 +178,8 @@
             <p><a class="btn btn-default" href="project.html" role="button">项目详情 &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
     </div><!-- /.row -->
-    <div th:if="${#strings.isEmpty(portal_type_list)}">未能找到分类信息</div>
-    <div th:if="${not #strings.isEmpty(portal_type_list)}">
+    <div th:if="${#lists.isEmpty(portal_type_list)}">未能找到分类信息</div>
+    <div th:if="${not #lists.isEmpty(portal_type_list)}">
         <div th:each="type : ${portal_type_list}" class="container">
         <div class="row clearfix">
             <div class="col-md-12 column">
@@ -194,8 +194,8 @@
                     </div>
                     <div class="mBd" style="padding-top:10px;">
                         <div class="row">
-                            <div th:if="${#strings.isEmpty(type.portalProjectVOList)}">未能找到当前分类的项目信息</div>
-                            <div th:if="${not #strings.isEmpty(type.portalProjectVOList)}">
+                            <div th:if="${#lists.isEmpty(type.portalProjectVOList)}">未能找到当前分类的项目信息</div>
+                            <div th:if="${not #lists.isEmpty(type.portalProjectVOList)}">
                                 <div th:each="project : ${type.portalProjectVOList}" class="col-md-3">
                                 <div class="thumbnail">
                                     <img alt="300x200" th:src="${project.headerPicturePath}" src="img/product-1.jpg" />
@@ -225,7 +225,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

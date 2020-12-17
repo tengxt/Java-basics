@@ -2,16 +2,14 @@ package com.tengxt.crowd.handler;
 
 import com.tengxt.crowd.MySQLRemoteService;
 import com.tengxt.crowd.config.UploadFileConfig;
-import com.tengxt.crowd.entity.vo.LoginMemberVO;
-import com.tengxt.crowd.entity.vo.MemberConfirmInfoVO;
-import com.tengxt.crowd.entity.vo.ProjectVO;
-import com.tengxt.crowd.entity.vo.ReturnVO;
+import com.tengxt.crowd.entity.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -194,6 +192,19 @@ public class ProjectHandler {
     }
 
 
+    @RequestMapping("/show/project/detail/{projectId}")
+    public String getDetailProject(
+            @PathVariable("projectId") Integer projectId,
+            ModelMap modelMap) {
+        ResultEntity<DetailProjectVO> resultEntity = mySQLRemoteService.getDetailProjectVORemote(projectId);
+        if (ResultEntity.SUCCESS.equals(resultEntity.getResult())) {
+            DetailProjectVO detailProjectVO = resultEntity.getData();
+            modelMap.addAttribute(CrowdConstant.ATTR_NAME_DETAIL_PROJECT, detailProjectVO);
+        }
+        return "project-show-detail";
+    }
+
+
     /**
      * 上传单个文件
      *
@@ -253,7 +264,7 @@ public class ProjectHandler {
         } catch (IOException e) {
             logger.error("fileUploadBySingle >>>>" + e.getMessage());
         }
-        return dest.getPath().toString();
+        return fileServerPath;
     }
 }
 
