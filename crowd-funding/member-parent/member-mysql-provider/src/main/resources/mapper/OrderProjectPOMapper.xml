@@ -74,7 +74,7 @@
     order_id
   </sql>
 
-  <select id="selectOrderProjectVO" resultType="org.fall.entity.vo.OrderProjectVO">
+  <select id="selectOrderProjectVO" resultType="com.tengxt.crowd.entity.vo.OrderProjectVO">
     select distinct
     project_name projectName,
     description_simple launchName,
