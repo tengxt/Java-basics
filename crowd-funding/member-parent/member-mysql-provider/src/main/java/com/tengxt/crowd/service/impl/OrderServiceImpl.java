@@ -44,13 +44,12 @@ public class OrderServiceImpl implements OrderService {
         example.createCriteria().andMemberIdEqualTo(memberId);
         List<AddressPO> addressPOList = addressPOMapper.selectByExample(example);
         List<AddressVO> addressVOList = new ArrayList<>();
-        if (null == addressPOList || addressPOList.size() == 0) {
-            throw new NullPointerException("地址数据为空");
-        }
-        for (AddressPO addressPO : addressPOList) {
-            AddressVO addressVO = new AddressVO();
-            BeanUtils.copyProperties(addressPO,addressVO);
-            addressVOList.add(addressVO);
+        if (null != addressPOList && addressPOList.size() > 0) {
+            for (AddressPO addressPO : addressPOList) {
+                AddressVO addressVO = new AddressVO();
+                BeanUtils.copyProperties(addressPO, addressVO);
+                addressVOList.add(addressVO);
+            }
         }
         return addressVOList;
     }
@@ -61,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         // 创建OrderPO对象
         OrderPO orderPO = new OrderPO();
         // 从传入的OrderVO给OrderPO赋值
-        BeanUtils.copyProperties(orderVO,orderPO);
+        BeanUtils.copyProperties(orderVO, orderPO);
         // 将OrderPO存入数据库
         orderPOMapper.insert(orderPO);
         // 得到存入后自增产生的order id
@@ -71,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
         // 创建OrderProjectPO对象
         OrderProjectPO orderProjectPO = new OrderProjectPO();
         // 赋值
-        BeanUtils.copyProperties(orderProjectVO,orderProjectPO);
+        BeanUtils.copyProperties(orderProjectVO, orderProjectPO);
         // 给orderProjectPO设置orderId
         orderProjectPO.setOrderId(orderId);
         // 存入数据库
@@ -82,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void saveAddressPO(AddressVO addressVO) {
         AddressPO addressPO = new AddressPO();
-        BeanUtils.copyProperties(addressVO,addressPO);
+        BeanUtils.copyProperties(addressVO, addressPO);
         addressPOMapper.insert(addressPO);
     }
 }

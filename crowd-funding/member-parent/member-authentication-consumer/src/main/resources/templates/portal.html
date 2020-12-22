@@ -130,13 +130,13 @@
         <li data-target="#myCarousel" data-slide-to="2"></li>
     </ol>
     <div class="carousel-inner" role="listbox">
-        <div class="item active" onclick="window.location.href='project.html'" style="cursor:pointer;">
+        <div class="item active"  style="cursor:pointer;">
             <img src="img/carousel-1.jpg" alt="First slide">
         </div>
-        <div class="item" onclick="window.location.href='project.html'" style="cursor:pointer;">
+        <div class="item" style="cursor:pointer;">
             <img src="img/carousel-2.jpg" alt="Second slide">
         </div>
-        <div class="item" onclick="window.location.href='project.html'" style="cursor:pointer;">
+        <div class="item" style="cursor:pointer;">
             <img src="img/carousel-3.jpg" alt="Third slide">
         </div>
     </div>
@@ -163,19 +163,19 @@
             <img class="img-circle" src="img/p1.jpg" alt="Generic placeholder image" style="width: 140px; height: 140px;">
             <h2>智能高清监控机器人</h2>
             <p>可爱的造型，摄像安防远程互联的全能设计，让你随时随地守护您的家人，陪伴你的生活。</p>
-            <p><a class="btn btn-default" href="project.html" role="button">项目详情 &raquo;</a></p>
+            <p><a class="btn btn-default" href="#" role="button">项目详情 &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
             <img class="img-circle" src="img/p2.jpg" alt="Generic placeholder image" style="width: 140px; height: 140px;">
             <h2>NEOKA智能手环</h2>
             <p>要运动更要安全，这款、名为“蝶舞”的NEOKA-V9100智能运动手环为“安全运动而生”。</p>
-            <p><a class="btn btn-default" href="project.html" role="button">项目详情 &raquo;</a></p>
+            <p><a class="btn btn-default" href="#" role="button">项目详情 &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
             <img class="img-circle" src="img/p3.png" alt="Generic placeholder image" style="width: 140px; height: 140px;">
             <h2>驱蚊扣</h2>
             <p>随处使用的驱蚊纽扣，<br>解决夏季蚊虫问题。</p>
-            <p><a class="btn btn-default" href="project.html" role="button">项目详情 &raquo;</a></p>
+            <p><a class="btn btn-default" href="#" role="button">项目详情 &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
     </div><!-- /.row -->
     <div th:if="${#lists.isEmpty(portal_type_list)}">未能找到分类信息</div>
@@ -201,7 +201,7 @@
                                     <img alt="300x200" th:src="${project.headerPicturePath}" src="img/product-1.jpg" />
                                     <div class="caption">
                                         <h3 class="break">
-                                            <a href="project.html" th:href="@{http://localhost/project/show/project/detail/} + ${project.projectId}" th:text="${project.projectName}">活性富氢净水直饮机</a>
+                                            <a href="#" th:href="@{http://localhost/project/show/project/detail/} + ${project.projectId}" th:text="${project.projectName}">活性富氢净水直饮机</a>
                                         </h3>
                                         <p>
                                         <div style="float:left;"><i class="glyphicon glyphicon-screenshot" title="目标金额" ></i> $<span th:text="${project.money}">20,000</span> </div>
@@ -256,7 +256,7 @@
 <script>
     $(".thumbnail img").css("cursor", "pointer");
     $(".thumbnail img").click(function(){
-        window.location.href = "project.html";
+        // window.location.href = "project.html";
     });
 </script>
 </body>

@@ -6,6 +6,7 @@ import com.tengxt.crowd.entity.vo.LoginMemberVO;
 import com.tengxt.crowd.entity.vo.OrderProjectVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import tengxt.constant.CrowdConstant;
@@ -57,6 +58,9 @@ public class OrderHandler {
 
     @RequestMapping("/save/address")
     public String saveAddress(AddressVO addressVO, HttpSession session) {
+        if (StringUtils.isEmpty(addressVO)) {
+            return null;
+        }
         // 通过远程方法保存地址信息
         ResultEntity<String> resultEntity = mySQLRemoteService.saveAddressRemote(addressVO);
         // 从session域得到当前的orderProjectVO

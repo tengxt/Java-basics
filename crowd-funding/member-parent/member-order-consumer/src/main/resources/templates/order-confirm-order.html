@@ -181,8 +181,8 @@
                                     </blockquote>
                                 </div>
                                 <div class="col-md-12 column" style="padding:0 120px;">
-                                    <div th:if="${#strings.isEmpty(session.addressVOList)}" th:text="暂时没有地址信息"></div>
-                                    <div th:if="${not #strings.isEmpty(session.addressVOList)}">
+                                    <div th:if="${#lists.isEmpty(session.addressVOList)}" th:text="暂时没有地址信息"></div>
+                                    <div th:if="${not #lists.isEmpty(session.addressVOList)}">
                                         <div th:each="addressVO : ${session.addressVOList}" class="radio">
                                             <label>
                                                 <input type="radio" name="addressId" value="option1" th:value="${addressVO.id}" checked>
