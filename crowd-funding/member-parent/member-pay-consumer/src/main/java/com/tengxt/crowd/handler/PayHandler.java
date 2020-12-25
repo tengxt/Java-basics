@@ -37,9 +37,12 @@ public class PayHandler {
     @ResponseBody
     @RequestMapping("generate/order")
     public String generateOrder(OrderVO orderVO, HttpSession session) throws UnsupportedEncodingException, AlipayApiException {
-
         // 得到session域中的orderProjectVO
         OrderProjectVO orderProjectVO = (OrderProjectVO) session.getAttribute("orderProjectVO");
+        if (Objects.isNull(orderProjectVO)) {
+            logger.error("获取Session中的数据为空");
+            return null;
+        }
         // 将orderProjectVO赋给前端传来的orderVO
         orderVO.setOrderProjectVO(orderProjectVO);
         // 生成支付宝订单号
@@ -70,7 +73,6 @@ public class PayHandler {
      * @throws UnsupportedEncodingException
      */
     private String sendRequestToAliPay(String orderNum, Double orderAmount, String subject, String body) throws AlipayApiException, UnsupportedEncodingException {
-
         //获得初始化的AlipayClient
         AlipayClient alipayClient = new DefaultAlipayClient(
                 payProperties.getGatewayUrl(),
