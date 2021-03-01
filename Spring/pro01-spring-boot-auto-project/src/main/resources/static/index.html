@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>REST 风格 Form 表单请求 GET、POST、PUT、DELETE</title>
+</head>
+<body>
+
+<p><a href="car/2/owner/zhangsan">普通参数注解(@PathVariable)</a></p>
+<p><a href="car/2/owner/zhangsan?age=19&inters=唱&inters=跳&inters=rap&inters=篮球">普通参数注解(@RequestParam)</a></p>
+<p><a href="/cars/sell;low=34;brand=byd,audi,yd">矩阵变量1</a></p>
+<p><a href="/boss/1;age=20/2;age=10">矩阵变量2</a></p>
+
+
+<form action="/save" method="post">
+    用户名：<input type="text" name="userName" value=""/><br>
+    密码：<input type="password" name="password" value=""/><br>
+    邮箱：<input type="email" name="email" value=""/><br>
+    <button type="submit" value="点击提交">点击提交</button>
+</form>
+<hr/>
+<h3>GET请求</h3>
+<form action="/user" method="GET">
+    <button type="submit" value="提交">提交</button>
+</form>
+<h3>POST请求</h3>
+<form action="/user" method="POST">
+    <button type="submit" value="提交">提交</button>
+</form>
+
+<h3>PUT请求</h3>
+<form action="/user" method="POST">
+    <input name="_method" value="PUT" hidden="hidden"/>
+    <button type="submit" value="提交">提交</button>
+</form>
+
+<h3>DELETE请求</h3>
+<form action="/user" method="POST">
+    <input name="_method" value="DELETE" hidden="hidden"/>
+    <button type="submit" value="提交">提交</button>
+</form>
+</body>
+</html>
