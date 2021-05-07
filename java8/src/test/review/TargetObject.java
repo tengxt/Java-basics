@@ -1,7 +1,7 @@
 package test.review;
 
 public class TargetObject {
-    private String value;
+    /*private String value;
 
     public TargetObject() {
         value = "TargetObject";
@@ -13,5 +13,5 @@ public class TargetObject {
 
     private void privateMethod() {
         System.out.println("value is " + value);
-    }
+    }*/
 }
